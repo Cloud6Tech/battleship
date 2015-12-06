@@ -1,0 +1,46 @@
+
+
+start game
+
+computer places ship parts
+
+player places ship parts
+
+player goes first
+
+player can do the following:
+  look at player's board
+  look at shots at the computer
+  look at shots by the computer
+  fire a shot at computer
+    if hit, mark target as a hit
+	check for sunken ship
+	  if sunk, reduce computer life by 1
+	    check life of computer > 0
+		if false, player wins!
+    if miss, mark target as a miss
+  next turn
+
+computer:
+  is computer in seek and destroy mode?
+    if yes, fire a targeted shot next to the latest hit
+	if hit, mark target as a hit
+	  check for sunken ship
+	  if sunk, reduce player life by 1
+            turn off seek and destroy mode
+            check life of player > 0
+	    if false, player loses!
+	if miss, mark target as a miss
+    if no, fire a random shot that has not been tried before
+	if hit, make the target as a hit
+            check for sunken ship
+            if sunk, reduce player life by 1
+                check life of player > 0
+                if false, player loses!
+            else:
+	 	enable seek and destroy mode
+        if miss, mark target with a miss
+	
+	    
+
+next turn
