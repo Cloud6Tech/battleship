@@ -17,6 +17,8 @@ class Board:
       for y in range(1,self._size+1):
         self._layout[x + str(y)] = 0
   
+    
+  
   # Returns the Description of the board
   # May be silly
   def getDescription(self):
@@ -127,3 +129,14 @@ class Board:
       self._layout[i] = ship
     
     return true
+  
+  # markSquare()
+  # Args: a string of a coordinate. ex: 'F5', and a mark ('hit' | 'miss')
+  # Actions: marks the dictionary at index of the coordinate as 'hit' or 'miss'
+  # Returns: true if the action succeeded, false if not   
+  def markSquare(self, coordinate, action):
+    if self.decodeCoordinate(coordinate) != (0,0):
+      self._layout[coordinate] = action
+      return true
+    else:
+      return false
