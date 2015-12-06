@@ -1,0 +1,30 @@
+The Ship Class
+
+Members of Method of Ship Objects
+
+Constructor:
+    ship = Ship( size, description )
+    Creates a new Ship object 'size' squares long, with equal amount of life. 'description' is not optional.
+
+Members:
+    _size - the length of the ship
+    _life - amount of hits the ship can take before sinking set to _size at construction
+    _description - string to describe the ship. 'battleship', 'scout ship', 'destroyer', 'carrier', 'submarine' are 	the usual names
+
+Methods:
+    getDescription() - Returns the description of the ship
+    	Args: None
+    	Returns: the description of the ship as a string
+
+    getSize() - Returns the size of the ship
+	Args: None
+	Returns: the size of the ship as an integer
+
+    isSunk() - Tell if the ship has been sunk
+	Args: None
+	Returns: True if the ship has been hit enough to reduce the life to 0, False if not
+
+    takeHit() - Register a hit on the ship
+	Args: None
+	Returns: None
+	Actions: Reduces the life of the ship by 1. 

@@ -1,0 +1,59 @@
+The Board Class
+
+Members and Methods of Board objects
+
+Constructor:
+    board = Board([description])
+    Create a new Board object. 'description' is optional
+
+Members:
+    _board - a picture object of the board
+    _description - a string describing the board
+    _layout - a Dictionary of the squares on the board. Usually contains a Ship object, a '0', the string 'hit', or 	the string 'miss'
+    _size - the width and length of the board. Currently set to 10. Creates a 10x10 board
+    _squareSize - the width and length in pixels of a square on the board. Used for drawing pictures
+     
+Methods:
+    addPegToSquare( coordinate, color ) - adds a colored peg to the board
+	Args: a coordinate in string form, and a color word (usually white or red)
+	Returns: Nothing
+	Action: adds a peg of the given color to the coordinate specified
+
+    createBoard() - returns a picture object of the board. The size is (_size+1)**2. 
+
+    decodeCoordinate( coordinate ) - returns a (x,y) pair based upon the argument given. 
+	Arg: a string coordinate. 'G4', 'A2', etc
+
+    drawShipOnSquare( coordinate ) - colors a square on the board to show a ship 
+	Args: a coordinate in string form
+	Returns: Nothing
+	Action: updates the _board picture object. For the coordinate given, colors the square grey to show a ship
+	occupying the square.
+	Note: Should only be used on the player's home board, to remind the player of his ships and the computers 		hits and misses
+
+    encodeCoordinate(row, column) - returns a coordinate as a string.
+	Args: the row and and column reprented as numbers. 1 = A, 2 = B, etc
+
+    fireAt( coordinate ) - determines if a coordinate on the board is occupied by a Ship
+	Args: a coordinate in string form
+	Returns: the infomation at _layout[coordinate]
+	If a ship is in the specified square, the ship object will be returned. If the square is empty returns 0.
+        Note: to be used on a player's home board, as thats where the ships are placed. It should not be used on
+	the player's remote board, where 'hit's and 'miss'es are tracked
+
+    getBoard() - returns the visual board
+	Args: Nothing
+	Returns: a copy of the board picture object for displaying
+
+    getDescription() - returns the _description member. 
+
+    markSquare( coordinate, action ) - adds 'hit' or 'miss' to the given coordinate
+	Args: a coordinate in string form, and string 'hit' or 'miss'
+	markSquare updates _layout{} with hit or miss, allowing the player to track what coordinates have been tried 	previously.
+	Returns: true if the action is successful, false if the given coordinate does not exist on the board    
+   
+    placeShip( ship, coordinate, growDirection ) - attmpts to place a Ship object on the board
+	Args: a Ship object, a coordinate in string form of the first square to occupy, and the direction the rest 		of the ship should fill. 
+	Note: direction should be 'left', 'right', 'up', or 'down'
+	Returns: True if the ship could be placed on the Board. False if the ship cannot fit.
+	Note: placeShip verifies that the space on the board is available and empty, and then adds the ship to the 		board. If space is not available, a warning popup is sent to the user and false is returned to the calling 		program.
