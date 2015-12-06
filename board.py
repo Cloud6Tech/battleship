@@ -9,6 +9,7 @@ class Board:
     self._description = description
     # By default the board is 10 x 10. Update _size for a different board
     self._size = 10
+    self._squareSize = 31
     # Initialize the board as a dictionary of 100 squares
     # 'A1', 'A2', 'A3', ... 'J8', 'J9', 'J10'
     # Each index returns a 0, until a ship is placed in it or a shot is fired
@@ -16,9 +17,47 @@ class Board:
     for x in string.uppercase[:self._size]:
       for y in range(1,self._size+1):
         self._layout[x + str(y)] = 0
+    self._board = self.createBoard()
+     
+  # createBoard()
+  # Args: none
+  # Actions: creates a picture object of the game board
+  # Returns: the picture object created
+  def createBoard(self):
+    squareEdgeLength = self._squareSize
+    squares = self._size + 1
+    boardWidth = squareEdgeLength * squares
+    boardHeight = boardWidth
+    background = blue
+    board = makeEmptyPicture(boardWidth,boardHeight,blue)
   
+    # Drawing Vertical Lines
+    for x in range(squares):
+      verticalEdge = x * squareEdgeLength
+      addLine(board, verticalEdge, 0, verticalEdge, boardHeight, white)
+  
+    # Drawing Horizontal Lines
+    for y in range(squares):  
+      horizontalEdge = y * squareEdgeLength
+      addLine(board, 0, horizontalEdge, boardWidth, horizontalEdge, white)
+  
+    # Now populate each square
+    for x in range(squares):
+      for y in range(squares):
+        verticalEdge = x * squareEdgeLength
+        horizontalEdge = y * squareEdgeLength
+        # Add the numbers across the first row
+        if y == 0 and x > 0:
+          addText(board, verticalEdge + squareEdgeLength/3, horizontalEdge + squareEdgeLength * 2 / 3, str(x), white)
+        # Add the letters down the first column
+        elif x == 0 and y > 0:
+          addText(board, verticalEdge + squareEdgeLength/3, horizontalEdge + squareEdgeLength * 2 / 3, chr(y + 64), white)
+        # Add peg circles everywhere else (except the top left square)
+        elif x > 0 and y > 0:
+          addOval(board, verticalEdge + squareEdgeLength/3, horizontalEdge + squareEdgeLength/3, 10, 10, white)
+          
+    return board
     
-  
   # Returns the Description of the board
   # May be silly
   def getDescription(self):
@@ -140,3 +179,29 @@ class Board:
       return true
     else:
       return false
+
+  # addPegToSquare()
+  # Args: string of coordinate and a color
+  # Actions: draws a colored peg in the coordinate given
+  def addPegToSquare(self, coordinate, color):
+    (row, column) = self.decodeCoordinate(coordinate)
+    addOvalFilled(self._board, self._squareSize * column + self._squareSize/3, self._squareSize * row + self._squareSize/3, 10, 10, color)
+    return
+  
+  # drawShipOnSquare()
+  # Args: coordinate in string form
+  # Actions: updates the picture object self._board, turning the coordinate given gray  
+  def drawShipOnSquare(self, coordinate):
+    (row, column) = self.decodeCoordinate(coordinate)
+    # Turn the square gray
+    addRectFilled(self._board, self._squareSize * column + 1, self._squareSize * row + 1, self._squareSize - 1, self._squareSize - 1, gray)
+    # Put the blue circle in the middle of the square back  
+    addOvalFilled(self._board, self._squareSize * column + self._squareSize/3, self._squareSize * row + self._squareSize/3, 10, 10, blue)
+    # Give the circle a white outline
+    addOval(self._board, self._squareSize * column + self._squareSize/3, self._squareSize * row + self._squareSize/3, 10, 10, white)
+    return
+    
+  def getBoard(self):
+    board = duplicatePicture(self._board)
+    return board
+  
