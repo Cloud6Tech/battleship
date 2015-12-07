@@ -115,7 +115,7 @@ class Board:
         showWarning('There isn\'t enough space on the board')
         return false
     elif growDirection == 'right':
-      if origY + size > self._size:
+      if origY + size - 1 > self._size:
         showWarning('There isn\'t enough space on the board')
         return false
     elif growDirection == 'up':
@@ -123,7 +123,7 @@ class Board:
         showWarning('There isn\'t enough space on the board')
         return false
     elif growDirection == 'down':
-      if origX + size > self._size:
+      if origX + size - 1 > self._size:
         showWarning('There isn\'t enough space on the board')
         return false
     else:
@@ -166,6 +166,7 @@ class Board:
     # If we got here, all the squares needed are empty. Now we can finally add the ship to the board
     for i in listOfEmptyCoordinates:
       self._layout[i] = ship
+      self.drawShipOnSquare(i)
     
     return true
   
