@@ -43,7 +43,7 @@ Methods:
 
     getBoard() - returns the visual board
 	Args: Nothing
-	Returns: a copy of the board picture object for displaying
+	Returns: the board picture object for displaying
 
     getDescription() - returns the _description member. 
 

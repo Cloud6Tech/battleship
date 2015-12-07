@@ -202,6 +202,5 @@ class Board:
     return
     
   def getBoard(self):
-    board = duplicatePicture(self._board)
-    return board
+    return self._board
   
