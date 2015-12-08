@@ -5,6 +5,9 @@ Members and Methods of Board objects
 Constructor:
     board = Board([description])
     Create a new Board object. 'description' is optional
+    Populates _layout. Dependant on the _size member
+    Calls createBoard() to make a picture object of the board. Dependant on the
+	_squareSize member
 
 Members:
     _board - a picture object of the board
