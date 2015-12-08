@@ -2,6 +2,7 @@
 # Final
 # Board.py
 
+from media import *
 import string
 
 class Board:
