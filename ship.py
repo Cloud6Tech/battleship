@@ -2,6 +2,8 @@
 # Final
 # ship.py
 
+from media import *
+
 class Ship:
 
   def __init__(self, size, description):
