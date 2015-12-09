@@ -239,21 +239,13 @@ class Board:
   def markHit(self, coordinate):
       self.markSquare(coordinate,'hit')
       self.addPegToSquare(coordinate,red)
-<<<<<<< HEAD
-=======
-      repaint(self._board)
->>>>>>> refs/remotes/origin/master
-  
+
   # markMiss()
   # Args: string of coordinate
   # Actions: draw a white-colored peg in the coordinate given, update dictionary at index of the coordinate as 'miss'
   def markMiss(self, coordinate):
       self.markSquare(coordinate,'miss')
       self.addPegToSquare(coordinate,white)
-<<<<<<< HEAD
-=======
-      repaint(self._board)
->>>>>>> refs/remotes/origin/master
   
   # drawShipOnSquare()
   # Args: coordinate in string form
