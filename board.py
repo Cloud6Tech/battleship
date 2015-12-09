@@ -196,7 +196,6 @@ class Board:
   def markHit(self, coordinate):
       self.markSquare(coordinate,'hit')
       self.addPegToSquare(coordinate,red)
-      repaint(self._board)
   
   # markMiss()
   # Args: string of coordinate
@@ -204,7 +203,6 @@ class Board:
   def markMiss(self, coordinate):
       self.markSquare(coordinate,'miss')
       self.addPegToSquare(coordinate,white)
-      repaint(self._board)
   
   # drawShipOnSquare()
   # Args: coordinate in string form
