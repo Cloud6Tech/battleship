@@ -24,6 +24,20 @@ class Player:
   def getRemoteBoard(self):
     return self._remoteBoard
     
+  def makeGuess(self):
+    # Prompt the user to guess a coordinate until a valid coordinate is entered
+    prompt = "Pick a target."
+    while True:
+      # Prompt the user
+      guess = requestString(prompt)
+    
+      # Verify that the coordinate is valid, return validated coordinate
+      if self._remoteBoard.decodeCoordinate(guess) != (0,0):
+        return guess
+      # If the coordinate is invalid, reprompt
+      else:
+        prompt = "That target is invalid. Pick a target."
+      
   def setupLocalBoard(self, listOfShips):
     self._listOfShips = listOfShips
     self._life = len(self._listOfShips)
@@ -53,4 +67,13 @@ class Player:
           
     return
     
-  
+  # Set up a board with predefined ship locations for easier testing
+  def setupTestPlayer(self, listOfShips):
+    self._listOfShips = listOfShips
+    self._life = len(self._listOfShips)
+    
+    shipsToPlace = list(self._listOfShips)
+    
+    for i in range(0,len(shipsToPlace)):
+      self._localBoard.placeShip(shipsToPlace[i],'A' + str(i+1),'down')
+    repaint(self._localBoard.getBoard())
