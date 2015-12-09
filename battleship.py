@@ -65,12 +65,9 @@ def battle():
     printNow(player.getName() + " fired at " + str(guess) + ".")
     
     # Check if the player guessed correctly
-    strike = opponent.getLocalBoard().fireAt(guess)
+    ship = opponent.getLocalBoard().fireAt(guess)
     
-    if strike == None:
-      break
-    
-    if strike == 0:  # The guess was wrong
+    if ship == 0:  # The guess was wrong
       # Update player's board
       player.getRemoteBoard().markMiss(guess)
       
@@ -83,7 +80,7 @@ def battle():
     
     else:            # The guess was correct
       # Take 1 hit point away from the hit ship
-      strike.takeHit()
+      ship.takeHit()
       
       # Update the player's board
       player.getRemoteBoard().markHit(guess)
@@ -92,10 +89,16 @@ def battle():
       opponent.getLocalBoard().markHit(guess)
       
       # Check if ship was sunk, display appropriate message
-      if strike.isSunk():  # The ship is sunk
-        printNow(player.getName() + " sunk " + opponent.getName() + "'s " + strike.getDescription() + "!")
+      if ship.isSunk():  # The ship is sunk
+        printNow(player.getName() + " sunk " + opponent.getName() + "'s " + ship.getDescription() + "!")
+        # Remove ship from opponent's list of ships
+        opponent.removeShip(ship)
+        # Check if opponent has lost, print message and exit if so
+        if opponent.getLife() == 0:
+          printNow(player.getName() + " wins!")
+          return
       else:                # The ship is hit, but not sunk
-        printNow(player.getName() + " hit " + opponent.getName() + "'s " + strike.getDescription() + "!")
+        printNow(player.getName() + " hit " + opponent.getName() + "'s " + ship.getDescription() + "!")
     
     # Increment n to swap players next turn
     n = abs(n-1)
