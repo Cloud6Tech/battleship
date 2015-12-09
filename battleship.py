@@ -2,16 +2,12 @@ setLibPath("D:\\Heather\\Documents\\School\\CSIT\\2015 Fall B - CST 205\\battles
 from player import Player
 from ship import Ship
 from board import Board
-from javax.swing import JOptionPane
-
-# Display an option dialog with given title, message, and options; returns index of selected option
-def getOption(title,message,options):
-  return JOptionPane.showOptionDialog(None,message,title,JOptionPane.DEFAULT_OPTION,JOptionPane.QUESTION_MESSAGE,None,options,options[0])
+from utility import *
 
 # Prompt the user for player type and create and return a human Player object or computer AI object with boards set up
 def createPlayer():
   # Create list of ships to place on boards
-  listOfShips = [Ship(5,"aircraft carrier"),Ship(4,"battleship"),Ship(3,"submarine"),Ship(3,"cruiser"),Ship(2,"Destroyer")]
+  listOfShips = [Ship(5,"aircraft carrier"),Ship(4,"battleship"),Ship(3,"submarine"),Ship(3,"cruiser"),Ship(2,"destroyer")]
 
   # Determine if the player is human (0) or a computer (1)
   playerType = getOption("Player Type","Is this player a human or a computer?",["Human","Computer"])
@@ -25,7 +21,7 @@ def createPlayer():
       playerName = ""
       
     # Create player object  
-    player = Player(Board('local'),Board('remote'),playerName)
+    player = Player(playerName)
     
     # Prompt player to set up their local board
     player.setupLocalBoard(listOfShips)
