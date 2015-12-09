@@ -63,18 +63,50 @@ class Board:
   # May be silly
   def getDescription(self):
     return self._description
+  
+  # validateCoordinate()
+  # Args: a coordinate in string form
+  # Returns: A working coordinate or False depending upon 
+  #  if the coordinate is in good form
+  def validateCoordinate(self, coordinate):
+    # Test if coordinate not empty
+    if coordinate:
+      # Convert whatever we have to an uppercase string
+      dataToValidate = str(coordinate).upper()
+      # Test the first char. 
+      # ord() < 64 or > 90 means it's not A - Z
+      firstChar = ord(dataToValidate[0])
+      if firstChar < 64 or firstChar > 90:
+        dataToValidate = false
+      # Now check to see if that row is on the board
+      elif firstChar - 64 > self._size:
+        dataToValidate = false
     
+      # Try to convert the remaining string to an int, and 
+      # see if it's on the board.
+      try:
+        if int(dataToValidate[1:]) >  self._size:
+          dataToValidate = false
+      # If int() above fails, we don't have a numeric string.
+      except:
+        dataToValidate = false
+    else:
+      dataToValidate = false 
+    return dataToValidate
+
   # decodeCoordinate()
   # Args: a string of a coordinate: 'F5', 'B10', etc
   # Returns: an (x, y) int pair for the row and column
   # also returns (0,0) if the coordinate is too large for the board
   def decodeCoordinate(self, id):
-    # ord('A') = 65. ord() - 64 will convert the row letter to a number between 1 - the size of the board
-    row = ord(id[0]) - 64
-    # Takes everything after the first character and convert into an int
-    column = int(id[1:])
-    # Make sure the row and column are withing the board's size. If they are beyond the board, return (0,0)
-    if row > self._size or column > self._size:
+    goodCoordinate = self.validateCoordinate(id)
+    if goodCoordinate:
+      # ord('A') = 65. ord() - 64 will convert the row letter to a number between 1 - the size of the board
+      row = ord(goodCoordinate[0]) - 64
+      # Takes everything after the first character and convert into an int
+      column = int(goodCoordinate[1:])
+      # Make sure the row and column are withing the board's size. If they are beyond the board, return (0,0)
+    else:
       row = 0
       column = 0
     # Return the (x, y) pair
@@ -100,44 +132,56 @@ class Board:
       else:
         return 0                 
   
-  # placeShip()
+  def validateSpaceForShip(self, ship, coordinate, growDirection):
   # Args: ship object, the starting coordinate, and which way to place the remaining ship
-  # Returns: true if the ship placement was successful. False if not
-  def placeShip(self, ship, coordinate, growDirection):
+  # Returns: true if there is enough space on the board, false if not
     # Use size to determine if the board can handle the ship
     size = ship.getSize()
-    
     # Save the starting coordinate in (x,y) form
     (origX,origY) = self.decodeCoordinate(coordinate)
     
     # Check to make sure the ship will fit on the board
     if growDirection == 'left':
       if origY - size < 0:
-        showWarning('There isn\'t enough space on the board')
-        return false
+        # Not enough room on the left
+        returnValue = false
+      else:
+        returnValue = true
     elif growDirection == 'right':
       if origY + size - 1 > self._size:
-        showWarning('There isn\'t enough space on the board')
-        return false
+        # Not enough room on the right
+        returnValue = false
+      else:
+        returnValue = true
     elif growDirection == 'up':
       if origX - size < 0:
-        showWarning('There isn\'t enough space on the board')
-        return false
+        # Not enough room going up
+        returnValue = false
+      else:
+        returnValue = true
     elif growDirection == 'down':
       if origX + size - 1 > self._size:
-        showWarning('There isn\'t enough space on the board')
-        return false
+        # Not enough room going down
+        returnValue = false
+      else:
+        returnValue = true
+    # If we are here, returnValue is not recognized
     else:
-      return false
+      returnValue = false
     
-    # If we got through the if above, the ship can fit on the board.
-    # Now we have to check to make sure all squares needed are empty
-    
+    return returnValue
+  
+  # placeShip()
+  # Args: ship object, the starting coordinate, and which way to place the remaining ship
+  # Returns: true if the ship placement was successful. False if not
+  def placeShip(self, ship, coordinate, growDirection):
+    sizeOfShip = ship.getSize()
+    # We have to check to make sure all squares needed are empty
     # Empty list of coordinates. As coordinates are found to be empty, add them to this list
     listOfEmptyCoordinates = []
     
     # For all the squares needed to place the ship, check that they are empty '0'
-    for i in range(size):
+    for i in range(sizeOfShip):
       if growDirection == 'left':
         x = origX
         y = origY - i
@@ -153,7 +197,6 @@ class Board:
       # Now we have (x,y) to check. encode it and check _layout
       # If true, there is something in (x,y) already
       if self._layout[self.encodeCoordinate(x,y)]:
-        showWarning('There is a ship in the way')
         return false
       else:
         # Empty square! add to our list
