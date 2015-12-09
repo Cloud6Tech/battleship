@@ -1,0 +1,17 @@
+GENERAL
+  - Add sounds
+  - Check comments for thoroughness/consistency
+  - Update documentation
+
+BATTLESHIP
+  - Update any board display calls after Boards are updated to show both
+  - Update to use AI
+
+PLAYER
+
+
+SHIP
+
+
+BOARD
+  - Update as needed for displaying both boards (return as Picture only and move drawing function to Player, since AI doesn't need boards drawn anyway?)

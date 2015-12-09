@@ -127,10 +127,10 @@ class Board:
   # Returns: what exists at _layout[coordinate] (either a ship or a 0)
   def fireAt(self, coordinate):
       # Test to make sure the coordinate is on the board first
-      if self.decodeCoordinate(coordinate) != (0,0):
+      if self.validateCoordinate(coordinate) != False:
         return self._layout[coordinate]
       else:
-        return 0                 
+        return None               
   
   def validateSpaceForShip(self, ship, coordinate, growDirection):
   # Args: ship object, the starting coordinate, and which way to place the remaining ship
