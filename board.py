@@ -180,6 +180,7 @@ class Board:
     # Empty list of coordinates. As coordinates are found to be empty, add them to this list
     listOfEmptyCoordinates = []
     
+    (origX, origY) = decodeCoordinate(coordinate)
     # For all the squares needed to place the ship, check that they are empty '0'
     for i in range(sizeOfShip):
       if growDirection == 'left':
