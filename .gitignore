@@ -1,3 +1,4 @@
 *.pybak
 board.pylog
 *.pylog
+*.class
