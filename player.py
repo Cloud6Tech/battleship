@@ -51,7 +51,10 @@ class Player:
       guess = requestString(prompt)
     
       # Verify that the coordinate is valid, return validated coordinate
-      if self._remoteBoard.validateCoordinate(guess) == False:
+      if guess == None:
+        # Cancel was clicked, return None
+        return None
+      elif self._remoteBoard.validateCoordinate(guess) == False:
         # Coodinate is invalid, reprompt
         prompt = "That target is invalid. Pick a target."
       elif guess in self._guesses:

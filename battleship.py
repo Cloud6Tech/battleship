@@ -57,6 +57,10 @@ def battle():
     # Get player's guess
     guess = player.makeGuess()
     
+    # If makeGuess returned None, player clicked cancel; exit
+    if guess == None:
+      return
+    
     # Display the player's guess
     printNow(player.getName() + " fired at " + str(guess) + ".")
     
