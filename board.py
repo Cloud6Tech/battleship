@@ -190,6 +190,22 @@ class Board:
     addOvalFilled(self._board, self._squareSize * column + self._squareSize/3, self._squareSize * row + self._squareSize/3, 10, 10, color)
     return
   
+  # markHit()
+  # Args: string of coordinate
+  # Actions: draw a red-colored peg in the coordinate given, update dictionary at index of the coordinate as 'hit'
+  def markHit(self, coordinate):
+      self.markSquare(coordinate,'hit')
+      self.addPegToSquare(coordinate,red)
+      repaint(self._board)
+  
+  # markMiss()
+  # Args: string of coordinate
+  # Actions: draw a white-colored peg in the coordinate given, update dictionary at index of the coordinate as 'miss'
+  def markMiss(self, coordinate):
+      self.markSquare(coordinate,'miss')
+      self.addPegToSquare(coordinate,white)
+      repaint(self._board)
+  
   # drawShipOnSquare()
   # Args: coordinate in string form
   # Actions: updates the picture object self._board, turning the coordinate given gray  
