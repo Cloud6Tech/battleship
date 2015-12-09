@@ -18,9 +18,9 @@ def createPlayer():
     # Get player's name
     playerName = requestString("What is your name?")
     
-    # Set player's name to empty string if cancel is clicked
+    # Return without creating player if cancel was clicked
     if playerName == None:
-      playerName = ""
+      return
       
     # Create player object  
     player = Player(playerName)
@@ -31,8 +31,8 @@ def createPlayer():
     
   #elif playerType == 1: # AI (computer) player
     
-  #else: # Option pane was closed
-  #  return None
+  # Update the title of the game board Picture object with the player's name
+  player.getLocalBoard().getBoard().setTitle(playerName + "'s Fleet")
     
   return player
 
@@ -52,6 +52,7 @@ def battle():
     # Set current player and opponent
     player = players[n]
     opponent = players[abs(n-1)]
+    repaint(player.getLocalBoard().getBoard())
   
     # Get player's guess
     guess = player.makeGuess()
@@ -62,9 +63,15 @@ def battle():
     # Check if the player guessed correctly
     strike = opponent.getLocalBoard().fireAt(guess)
     
+    if strike == None:
+      break
+    
     if strike == 0:  # The guess was wrong
       # Update player's board
-      player.getLocalBoard().markMiss(guess)
+      player.getRemoteBoard().markMiss(guess)
+      
+      # Update opponent's board
+      opponent.getLocalBoard().markMiss(guess)
       
       # Print message
       printNow(player.getName() + " missed!")
@@ -75,7 +82,10 @@ def battle():
       strike.takeHit()
       
       # Update the player's board
-      player.getLocalBoard().markHit(guess)
+      player.getRemoteBoard().markHit(guess)
+      
+      # Update the opponent's board
+      opponent.getLocalBoard().markHit(guess)
       
       # Check if ship was sunk, display appropriate message
       if strike.isSunk():  # The ship is sunk
@@ -85,5 +95,3 @@ def battle():
     
     # Increment n to swap players next turn
     n = abs(n-1)
-    
-    break  
