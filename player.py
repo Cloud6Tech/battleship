@@ -54,12 +54,12 @@ class Player:
       if self._remoteBoard.validateCoordinate(guess) == False:
         # Coodinate is invalid, reprompt
         prompt = "That target is invalid. Pick a target."
-      elif guess in guesses:
+      elif guess in self._guesses:
         # Coordinate was already guessed, reprompt
         prompt = "You have already fired at that target."
       else:  
         # Coordinate is valid and not already guessed
-        guesses.append(guess)
+        self._guesses.append(guess)
         return guess
         
       
