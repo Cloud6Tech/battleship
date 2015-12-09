@@ -3,8 +3,15 @@
 # Player Class
 # Team: Jason Lloyd Heather Mccabe, Brett, Matthew Mason
 
+setLibPath()
 from media import *
+from ship import Ship
 from board import Board
+from javax.swing import JOptionPane
+
+# Display an option dialog with given title (string), message (string), and options (list); returns index of selected option
+def getOption(title,message,options):
+  return JOptionPane.showOptionDialog(None,message,title,JOptionPane.DEFAULT_OPTION,JOptionPane.QUESTION_MESSAGE,None,options,options[0])
 
 class Player:
   
@@ -12,7 +19,6 @@ class Player:
     self._name = name
     self._localBoard = Board('local')
     self._remoteBoard = Board('remote')
-    self._life = 0
     self._listOfShips = []
     
   def getName(self):
@@ -24,6 +30,19 @@ class Player:
   def getRemoteBoard(self):
     return self._remoteBoard
     
+  def getLife(self):
+    return len(self._listOfShips)
+  
+  def removeShip(self, ship):
+    i = 0
+    for myShip in self._listOfShips:
+      if myShip == ship:
+        del self._listOfShips[i]
+        return true
+      else:
+        i += 1
+    return false
+        
   def makeGuess(self):
     # Prompt the user to guess a coordinate until a valid coordinate is entered
     prompt = "Pick a target."
@@ -40,40 +59,60 @@ class Player:
       
   def setupLocalBoard(self, listOfShips):
     self._listOfShips = listOfShips
-    self._life = len(self._listOfShips)
-    
-    
+        
     show(self._localBoard.getBoard())
     
     # Make a copy of the listOfShips
     shipsToPlace = list(self._listOfShips)
     while len(shipsToPlace) > 0:
       ship = shipsToPlace[0]
-      coordinate = requestString('What square is the bow of your %s?' % ship.getDescription())
       
-      direction = 0
-      while not direction:
-        direction = requestString('Which direction is the stern of your %s' % ship.getDescription())
-        if direction == 'up' or direction == 'down' or direction == 'left' or direction == 'right':
-          pass
-        else:
-          showInformation('Please type "up", "down", "left", or "right"')
-          direction = 0
+      coordinate = 0
+      while not coordinate:
+        coordinate = requestString('On what square will the bow of your %s be? ' % ship.getDescription())
+        coordinate = self._localBoard.validateCoordinate(coordinate)
+        if not coordinate:
+          showInformation('That coordinate does not exist on the board, please try again ')
+               
+      directionChoices = ['Up', 'Down', 'Left', 'Right']
+      direction = getOption("", "In which direction is the stern of your %s?" % ship.getDescription(), directionChoices)
       
-      if self._localBoard.placeShip(ship, coordinate, direction):
-        repaint(self._localBoard.getBoard())
-        showInformation('Your %s has been placed on the board' % ship.getDescription())
-        del shipsToPlace[0]
+      if direction == 0:
+        direction = 'up'
+      elif direction == 1:
+        direction = 'down'
+      elif direction == 2:
+        direction = 'left'
+      elif direction == 3:
+        direction = 'right'
+      
+      if self._localBoard.validateSpaceForShip(ship, coordinate, direction):
+        if self._localBoard.placeShip(ship, coordinate, direction):
+          repaint(self._localBoard.getBoard())
+          showInformation('Your %s has been placed on the board' % ship.getDescription())
+          del shipsToPlace[0]
+        else: 
+          showInformation('There is an existing ship in the way, please try a different location ')
+      else:
+        showInformation('There is not enough room on the board in that direction, please try a different location ')
           
     return
     
   # Set up a board with predefined ship locations for easier testing
-  def setupTestPlayer(self, listOfShips):
-    self._listOfShips = listOfShips
-    self._life = len(self._listOfShips)
+  def setupTestPlayer(self):
+    listOfShips = []
+    listOfShips.append(Ship(2,'destroyer'))
+    listOfShips.append(Ship(3,'submarine'))
+    listOfShips.append(Ship(5,'carrier'))
     
-    shipsToPlace = list(self._listOfShips)
+    self.setupLocalBoard(listOfShips)
     
-    for i in range(0,len(shipsToPlace)):
-      self._localBoard.placeShip(shipsToPlace[i],'A' + str(i+1),'down')
-    repaint(self._localBoard.getBoard())
+    
+    #self._listOfShips = listOfShips
+        
+    #shipsToPlace = list(self._listOfShips)
+    
+    #for i in range(0,len(shipsToPlace)):
+    #self._localBoard.placeShip(shipsToPlace[i],'A' + str(i+1),'down')
+    #repaint(self._localBoard.getBoard())
+    return
