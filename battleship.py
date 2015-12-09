@@ -54,7 +54,7 @@ def battle():
     opponent = players[abs(n-1)]
     repaint(player.getLocalBoard().getBoard())
   
-    # Get player's guess
+    # Get player's guess; guessed coordinate will be validated
     guess = player.makeGuess()
     
     # If makeGuess returned None, player clicked cancel; exit
