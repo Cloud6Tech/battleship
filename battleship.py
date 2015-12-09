@@ -21,7 +21,8 @@ def createPlayer():
       playerName = ""
       
     # Create player object  
-    player = Player(Board('local'),Board('remote'),playerName)
+    #player = Player(Board('local'),Board('remote'),playerName)
+    player = Player(playerName)
     
     # Prompt player to set up their local board
     player.setupLocalBoard(listOfShips)
