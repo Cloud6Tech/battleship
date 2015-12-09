@@ -29,13 +29,10 @@ def createPlayer():
     #player.setupLocalBoard(listOfShips)
     player.setupTestPlayer(listOfShips)
     
-    # Update the title of the game board Picture object with the player's name
-    player.getLocalBoard().getBoard().setTitle(playerName + "'s Fleet")
-    
   #elif playerType == 1: # AI (computer) player
     
-  #else: # Option pane was closed
-  #  return None
+  # Update the title of the game board Picture object with the player's name
+  player.getLocalBoard().getBoard().setTitle(playerName + "'s Fleet")
     
   return player
 
