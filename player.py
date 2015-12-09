@@ -3,7 +3,6 @@
 # Player Class
 # Team: Jason Lloyd Heather Mccabe, Brett, Matthew Mason
 
-setLibPath()
 from media import *
 from ship import Ship
 from board import Board
@@ -20,6 +19,7 @@ class Player:
     self._localBoard = Board('local')
     self._remoteBoard = Board('remote')
     self._listOfShips = []
+    self._guesses = []
     
   def getName(self):
     return self._name
@@ -43,19 +43,25 @@ class Player:
         i += 1
     return false
         
+  # Prompt the user to guess a coordinate until a valid, un-guessed coordinate is entered; return validated coordinate
   def makeGuess(self):
-    # Prompt the user to guess a coordinate until a valid coordinate is entered
     prompt = "Pick a target."
     while True:
       # Prompt the user
       guess = requestString(prompt)
     
       # Verify that the coordinate is valid, return validated coordinate
-      if self._remoteBoard.decodeCoordinate(guess) != (0,0):
-        return guess
-      # If the coordinate is invalid, reprompt
-      else:
+      if self._remoteBoard.validateCoordinate(guess) == False:
+        # Coodinate is invalid, reprompt
         prompt = "That target is invalid. Pick a target."
+      elif guess in guesses:
+        # Coordinate was already guessed, reprompt
+        prompt = "You have already fired at that target."
+      else:  
+        # Coordinate is valid and not already guessed
+        guesses.append(guess)
+        return guess
+        
       
   def setupLocalBoard(self, listOfShips):
     self._listOfShips = listOfShips
