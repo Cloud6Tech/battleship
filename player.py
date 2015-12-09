@@ -3,14 +3,14 @@
 # Player Class
 # Team: Jason Lloyd Heather Mccabe, Brett, Matthew Mason
 
-
+from media import *
 
 class Player:
   
-  def __init__(self, name=''):
+  def __init__(self, localBoard, remoteBoard, name=''):
     self._name = name
-    self._localBoard = Board('local')
-    self._remoteBoard = Board('remote')
+    self._localBoard = localBoard
+    self._remoteBoard = remoteBoard
     self._life = 0
     self._listOfShips = []
     
