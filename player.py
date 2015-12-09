@@ -105,20 +105,17 @@ class Player:
     return
     
   # Set up a board with predefined ship locations for easier testing
-  def setupTestPlayer(self):
-    listOfShips = []
-    listOfShips.append(Ship(2,'destroyer'))
-    listOfShips.append(Ship(3,'submarine'))
-    listOfShips.append(Ship(5,'carrier'))
+  def setupTestPlayer(self,listOfShips):
+    # Set up player with fewer ships to manually place
+    #listOfShips = []
+    #listOfShips.append(Ship(2,'destroyer'))
+    #listOfShips.append(Ship(3,'submarine'))
+    #listOfShips.append(Ship(5,'carrier'))
+    #self.setupLocalBoard(listOfShips)
     
-    self.setupLocalBoard(listOfShips)
-    
-    
-    #self._listOfShips = listOfShips
-        
-    #shipsToPlace = list(self._listOfShips)
-    
-    #for i in range(0,len(shipsToPlace)):
-    #self._localBoard.placeShip(shipsToPlace[i],'A' + str(i+1),'down')
-    #repaint(self._localBoard.getBoard())
+    # Automatically place ships
+    self._listOfShips = listOfShips
+    for i in range(0,len(listOfShips)):
+      self._localBoard.placeShip(listOfShips[i],'A' + str(i+1),'down')
+    repaint(self._localBoard.getBoard())
     return
