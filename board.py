@@ -14,11 +14,15 @@ class Board:
     # Initialize the board as a dictionary of 100 squares
     # 'A1', 'A2', 'A3', ... 'J8', 'J9', 'J10'
     # Each index returns a 0, until a ship is placed in it or a shot is fired
-    self._layout = {}
+    self._upperLayout = {}
     for x in string.uppercase[:self._size]:
       for y in range(1,self._size+1):
-        self._layout[x + str(y)] = 0
-    self._board = self.createBoard()
+        self._upperLayout[x + str(y)] = 0
+    self._lowerLayout = {}
+    for x in string.uppercase[:self._size]:
+      for y in range(1,self._size+1):
+        self._lowerLayout[x + str(y)] = 0
+    self._board = self.createBigBoard()
      
   # createBoard()
   # Args: none
@@ -58,7 +62,53 @@ class Board:
           addOval(board, verticalEdge + squareEdgeLength/3, horizontalEdge + squareEdgeLength/3, 10, 10, white)
           
     return board
-    
+  
+  def createBigBoard(self):
+    squareEdgeLength = self._squareSize
+    squares = self._size + 1
+    topBoardHeight = squareEdgeLength * squares
+  
+    bottomBoardStart = topBoardHeight + squareEdgeLength
+  
+    boardWidth = squareEdgeLength * squares
+    boardHeight = squareEdgeLength * (squares * 2 + 1)
+    background = blue
+    board = makeEmptyPicture(boardWidth, boardHeight, background)
+  
+    # Draw Horizontal Lines
+    for y in range(squares * 2 + 1):
+      horizontalEdge = y * squareEdgeLength
+      addLine(board, 0, horizontalEdge, boardWidth, horizontalEdge, white)
+  
+    # Draw Vertical Lines
+    for x in range(squares):
+      verticalEdge = x * squareEdgeLength
+      addLine(board, verticalEdge, 0, verticalEdge, topBoardHeight, white)
+      addLine(board, verticalEdge, bottomBoardStart, verticalEdge, boardHeight, white) 
+  
+    # Now populate each square
+    for x in range(squares):
+      for y in range(squares * 2 + 1):
+        verticalEdge = x * squareEdgeLength
+        horizontalEdge = y * squareEdgeLength
+        textXBegin = verticalEdge + squareEdgeLength/3
+        textYBegin = horizontalEdge + squareEdgeLength * 2 / 3
+        # Add the numbers across the first row
+        if (y == 0 or y == 12) and x > 0:
+          addText(board, textXBegin, textYBegin, str(x), white)
+        elif x == 0 and y > 0 and y < 11:
+          addText(board, textXBegin, textYBegin, chr(y+64), white)
+        elif x == 0 and y > 12:
+          addText(board, textXBegin, textYBegin, chr(y-12+64), white)
+        elif x > 0 and y > 0:
+          if y == 11:
+            pass
+          else:
+            addOval(board, verticalEdge + squareEdgeLength/3, horizontalEdge + squareEdgeLength/3, 10, 10, white)
+        
+    return board
+  
+  
   # Returns the Description of the board
   # May be silly
   def getDescription(self):
@@ -125,50 +175,56 @@ class Board:
   # fireAt()
   # Args: coordinate in string form
   # Returns: what exists at _layout[coordinate] (either a ship or a 0)
+  # fireAT() now inspects the lower board, which is where the player put their ships
   def fireAt(self, coordinate):
       # Test to make sure the coordinate is on the board first
       if self.decodeCoordinate(coordinate) != (0,0):
-        return self._layout[coordinate]
+        return self._lowerLayout[coordinate]
       else:
         return 0                 
-  
-  def validateSpaceForShip(self, ship, coordinate, growDirection):
   # Args: ship object, the starting coordinate, and which way to place the remaining ship
   # Returns: true if there is enough space on the board, false if not
+  # validateSpaceForShip() now works on the lower board, so an offset is needed
+  def validateSpaceForShip(self, ship, coordinate, growDirection):
+ 
     # Use size to determine if the board can handle the ship
     size = ship.getSize()
-    # Save the starting coordinate in (x,y) form
-    (origX,origY) = self.decodeCoordinate(coordinate)
+    # Save the starting coordinate in (row,col) form
+    (row,col) = self.decodeCoordinate(coordinate)
+    if (row, col) != (0,0):
+      # Need to modify row because of the combined board
+      row += self._size + 2
     
-    # Check to make sure the ship will fit on the board
-    if growDirection == 'left':
-      if origY - size < 0:
-        # Not enough room on the left
-        returnValue = false
+      # Check to make sure the ship will fit on the board
+      if growDirection == 'left':
+        if col - size < 0:
+          # Not enough room on the left
+          returnValue = false
+        else:
+          returnValue = true
+      elif growDirection == 'right':
+        if col + size - 1 > self._size:
+          # Not enough room on the right
+          returnValue = false
+        else:
+          returnValue = true
+      elif growDirection == 'up':
+        if row - size < self._size + 2:
+          # Not enough room going up
+          returnValue = false
+        else:
+          returnValue = true
+      elif growDirection == 'down':
+        if row + size - 1 > ((self._size + 1) * 2):
+          # Not enough room going down
+          returnValue = false
+        else:
+          returnValue = true
+      # If we are here, returnValue is not recognized
       else:
-        returnValue = true
-    elif growDirection == 'right':
-      if origY + size - 1 > self._size:
-        # Not enough room on the right
         returnValue = false
-      else:
-        returnValue = true
-    elif growDirection == 'up':
-      if origX - size < 0:
-        # Not enough room going up
-        returnValue = false
-      else:
-        returnValue = true
-    elif growDirection == 'down':
-      if origX + size - 1 > self._size:
-        # Not enough room going down
-        returnValue = false
-      else:
-        returnValue = true
-    # If we are here, returnValue is not recognized
     else:
       returnValue = false
-    
     return returnValue
   
   # placeShip()
@@ -180,24 +236,24 @@ class Board:
     # Empty list of coordinates. As coordinates are found to be empty, add them to this list
     listOfEmptyCoordinates = []
     
-    (origX, origY) = self.decodeCoordinate(coordinate)
+    (row, col) = self.decodeCoordinate(coordinate)
     # For all the squares needed to place the ship, check that they are empty '0'
     for i in range(sizeOfShip):
       if growDirection == 'left':
-        x = origX
-        y = origY - i
+        x = row
+        y = col - i
       elif growDirection == 'right':
-        x = origX
-        y = origY + i 
+        x = row
+        y = col + i 
       elif growDirection == 'up':
-        x = origX - i
-        y = origY
+        x = row - i
+        y = col
       elif growDirection == 'down':
-        x = origX + i
-        y = origY
+        x = row + i
+        y = col
       # Now we have (x,y) to check. encode it and check _layout
       # If true, there is something in (x,y) already
-      if self._layout[self.encodeCoordinate(x,y)]:
+      if self._lowerLayout[self.encodeCoordinate(x,y)]:
         return false
       else:
         # Empty square! add to our list
@@ -210,7 +266,7 @@ class Board:
     
     # If we got here, all the squares needed are empty. Now we can finally add the ship to the board
     for i in listOfEmptyCoordinates:
-      self._layout[i] = ship
+      self._lowerLayout[i] = ship
       self.drawShipOnSquare(i)
     
     return true
@@ -219,9 +275,12 @@ class Board:
   # Args: a string of a coordinate. ex: 'F5', and a mark ('hit' | 'miss')
   # Actions: marks the dictionary at index of the coordinate as 'hit' or 'miss'
   # Returns: true if the action succeeded, false if not   
-  def markSquare(self, coordinate, action):
-    if self.decodeCoordinate(coordinate) != (0,0):
-      self._layout[coordinate] = action
+  def markSquare(self, coordinate, action, boardName ):
+    if self.decodeCoordinate(coordinate) != (0,0) and (boardName == 'upper' or boardName == 'lower'):
+      if boardName == 'lower':
+        self._lowerLayout[coordinate] = action
+      else:
+        self._upperLayout[coordinate] = action
       return true
     else:
       return false
@@ -229,30 +288,34 @@ class Board:
   # addPegToSquare()
   # Args: string of coordinate and a color
   # Actions: draws a colored peg in the coordinate given
-  def addPegToSquare(self, coordinate, color):
+  def addPegToSquare(self, coordinate, color, boardName):
     (row, column) = self.decodeCoordinate(coordinate)
+    if boardName == 'lower':
+      row += self._size + 2
     addOvalFilled(self._board, self._squareSize * column + self._squareSize/3, self._squareSize * row + self._squareSize/3, 10, 10, color)
     return
   
   # markHit()
   # Args: string of coordinate
   # Actions: draw a red-colored peg in the coordinate given, update dictionary at index of the coordinate as 'hit'
-  def markHit(self, coordinate):
-      self.markSquare(coordinate,'hit')
-      self.addPegToSquare(coordinate,red)
+  def markHit(self, coordinate, boardName):
+      self.markSquare(coordinate,'hit', boardName)
+      self.addPegToSquare(coordinate,red, boardName)
 
   # markMiss()
   # Args: string of coordinate
   # Actions: draw a white-colored peg in the coordinate given, update dictionary at index of the coordinate as 'miss'
-  def markMiss(self, coordinate):
-      self.markSquare(coordinate,'miss')
-      self.addPegToSquare(coordinate,white)
+  def markMiss(self, coordinate, boardName):
+      self.markSquare(coordinate,'miss', boardName)
+      self.addPegToSquare(coordinate,white, boardName)
   
   # drawShipOnSquare()
   # Args: coordinate in string form
   # Actions: updates the picture object self._board, turning the coordinate given gray  
   def drawShipOnSquare(self, coordinate):
     (row, column) = self.decodeCoordinate(coordinate)
+    #Offset Row because ships go on lower board
+    row += self._size + 2
     # Turn the square gray
     addRectFilled(self._board, self._squareSize * column + 1, self._squareSize * row + 1, self._squareSize - 1, self._squareSize - 1, gray)
     # Put the blue circle in the middle of the square back  

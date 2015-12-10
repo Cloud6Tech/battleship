@@ -1,4 +1,5 @@
-setLibPath("D:\\Heather\\Documents\\School\\CSIT\\2015 Fall B - CST 205\\battleship")
+#setLibPath("D:\\Heather\\Documents\\School\\CSIT\\2015 Fall B - CST 205\\battleship")
+setLibPath('C:\\Users\\Jason Lloyd\\Dropbox\\School\\CSUMB\\CST205\\Final Project\\battleship\\')
 from player import Player
 from ship import Ship
 from board import Board
@@ -26,13 +27,13 @@ def createPlayer():
     player = Player(playerName)
     
     # Prompt player to set up their local board
-    #player.setupLocalBoard(listOfShips)
-    player.setupTestPlayer(listOfShips)
+    player.setupLocalBoard(listOfShips)
+    #player.setupTestPlayer(listOfShips)
     
   #elif playerType == 1: # AI (computer) player
     
   # Update the title of the game board Picture object with the player's name
-  player.getLocalBoard().getBoard().setTitle(playerName + "'s Fleet")
+  player.getBoard().getBoard().setTitle(playerName + "'s Fleet")
     
   return player
 
@@ -52,7 +53,8 @@ def battle():
     # Set current player and opponent
     player = players[n]
     opponent = players[abs(n-1)]
-    repaint(player.getLocalBoard().getBoard())
+    board = players[n].getBoard()
+    repaint(board.getBoard())
   
     # Get player's guess
     guess = player.makeGuess()
@@ -61,31 +63,33 @@ def battle():
     printNow(player.getName() + " fired at " + str(guess) + ".")
     
     # Check if the player guessed correctly
-    strike = opponent.getLocalBoard().fireAt(guess)
+    strike = opponent.getBoard().fireAt(guess)
     
     if strike == None:
       break
     
     if strike == 0:  # The guess was wrong
       # Update player's board
-      player.getRemoteBoard().markMiss(guess)
+      player.getBoard().markMiss(guess, 'upper')
       
       # Update opponent's board
-      opponent.getLocalBoard().markMiss(guess)
+      opponent.getBoard().markMiss(guess, 'lower')
       
       # Print message
       printNow(player.getName() + " missed!")
       
     
-    else:            # The guess was correct
+    else:
+      printNow(strike)
+      # The guess was correct
       # Take 1 hit point away from the hit ship
       strike.takeHit()
       
       # Update the player's board
-      player.getRemoteBoard().markHit(guess)
+      player.getBoard().markHit(guess, 'upper')
       
       # Update the opponent's board
-      opponent.getLocalBoard().markHit(guess)
+      opponent.getBoard().markHit(guess, 'lower')
       
       # Check if ship was sunk, display appropriate message
       if strike.isSunk():  # The ship is sunk

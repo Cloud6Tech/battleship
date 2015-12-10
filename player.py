@@ -3,7 +3,6 @@
 # Player Class
 # Team: Jason Lloyd Heather Mccabe, Brett, Matthew Mason
 
-setLibPath()
 from media import *
 from ship import Ship
 from board import Board
@@ -17,18 +16,14 @@ class Player:
   
   def __init__(self, name=''):
     self._name = name
-    self._localBoard = Board('local')
-    self._remoteBoard = Board('remote')
+    self._board = Board('Player Board')
     self._listOfShips = []
     
   def getName(self):
     return self._name
     
-  def getLocalBoard(self):
-    return self._localBoard
-    
-  def getRemoteBoard(self):
-    return self._remoteBoard
+  def getBoard(self):
+    return self._board
     
   def getLife(self):
     return len(self._listOfShips)
@@ -45,14 +40,14 @@ class Player:
         
   def makeGuess(self):
     # Prompt the user to guess a coordinate until a valid coordinate is entered
-    prompt = "Pick a target."
+    prompt = self._name + ", pick a target."
     while True:
       # Prompt the user
       guess = requestString(prompt)
     
       # Verify that the coordinate is valid, return validated coordinate
-      if self._remoteBoard.decodeCoordinate(guess) != (0,0):
-        return guess
+      if self._board.decodeCoordinate(guess) != (0,0):
+        return guess.upper()
       # If the coordinate is invalid, reprompt
       else:
         prompt = "That target is invalid. Pick a target."
@@ -60,7 +55,7 @@ class Player:
   def setupLocalBoard(self, listOfShips):
     self._listOfShips = listOfShips
         
-    show(self._localBoard.getBoard())
+    show(self._board.getBoard())
     
     # Make a copy of the listOfShips
     shipsToPlace = list(self._listOfShips)
@@ -70,7 +65,7 @@ class Player:
       coordinate = 0
       while not coordinate:
         coordinate = requestString('On what square will the bow of your %s be? ' % ship.getDescription())
-        coordinate = self._localBoard.validateCoordinate(coordinate)
+        coordinate = self._board.validateCoordinate(coordinate)
         if not coordinate:
           showInformation('That coordinate does not exist on the board, please try again ')
                
@@ -86,9 +81,9 @@ class Player:
       elif direction == 3:
         direction = 'right'
       
-      if self._localBoard.validateSpaceForShip(ship, coordinate, direction):
-        if self._localBoard.placeShip(ship, coordinate, direction):
-          repaint(self._localBoard.getBoard())
+      if self._board.validateSpaceForShip(ship, coordinate, direction):
+        if self._board.placeShip(ship, coordinate, direction):
+          repaint(self._board.getBoard())
           showInformation('Your %s has been placed on the board' % ship.getDescription())
           del shipsToPlace[0]
         else: 
@@ -105,14 +100,15 @@ class Player:
     listOfShips.append(Ship(3,'submarine'))
     listOfShips.append(Ship(5,'carrier'))
     
-    self.setupLocalBoard(listOfShips)
+    #self.setupLocalBoard(listOfShips)
     
     
-    #self._listOfShips = listOfShips
+    self._listOfShips = listOfShips
         
-    #shipsToPlace = list(self._listOfShips)
+    shipsToPlace = list(self._listOfShips)
     
-    #for i in range(0,len(shipsToPlace)):
-    #self._localBoard.placeShip(shipsToPlace[i],'A' + str(i+1),'down')
-    #repaint(self._localBoard.getBoard())
+    for i in range(0,len(shipsToPlace)):
+      self._board.placeShip(shipsToPlace[i],'A' + str(i+1),'down')
+    repaint(self._board.getBoard())
     return
+    
