@@ -178,10 +178,11 @@ class Board:
   # fireAT() now inspects the lower board, which is where the player put their ships
   def fireAt(self, coordinate):
       # Test to make sure the coordinate is on the board first
-      if self.decodeCoordinate(coordinate) != (0,0):
+      if self.validateCoordinate(coordinate) != False:
         return self._lowerLayout[coordinate]
       else:
         return 0                 
+
   # Args: ship object, the starting coordinate, and which way to place the remaining ship
   # Returns: true if there is enough space on the board, false if not
   # validateSpaceForShip() now works on the lower board, so an offset is needed
