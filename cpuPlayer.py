@@ -44,7 +44,7 @@ class CpuPlayer:
   # Prompt the user to guess a coordinate until a valid, un-guessed coordinate is entered; return validated coordinate
   def makeGuess(self,hitCoord, usedCoord):
     #calls autoGuess function makeGuess
-    makeGuess(hitCoord, usedCoord)
+    return makeGuess(hitCoord, usedCoord)
         
       
   def setupLocalBoard(self, listOfShips):
