@@ -1,8 +1,11 @@
 #setLibPath("D:\\Heather\\Documents\\School\\CSIT\\2015 Fall B - CST 205\\battleship")
-setLibPath('C:\\Users\\Jason Lloyd\\Dropbox\\School\\CSUMB\\CST205\\Final Project\\battleship\\')
+#setLibPath('C:\\Users\\Jason Lloyd\\Dropbox\\School\\CSUMB\\CST205\\Final Project\\battleship\\')
+setLibPath('C:\\Users\\Bretterbear\\Documents\\GitHub\\battleship')
+
 from player import Player
 from ship import Ship
 from board import Board
+from sounds import SoundEffect
 from utility import *
 from random import randint
 
@@ -39,6 +42,18 @@ def createPlayer():
 
 def battle():
 
+  # Create the soundEffects to be used in the program
+  #Change this to reflect your sound directory in order to make audio work
+  soundDirectory = 'C:\\Users\\Bretterbear\\Documents\\GitHub\\battleship\\SoundFiles'
+  
+  sndDeploy = SoundEffect(soundDirectory + '\\deployEffect.wav')
+  sndDefeat = SoundEffect(soundDirectory + '\\defeatEffect.wav')
+  sndFire = SoundEffect(soundDirectory + '\\fireEffect.wav')
+  sndHit = SoundEffect(soundDirectory + '\\hitEffect.wav')
+  sndMiss = SoundEffect(soundDirectory + '\\missedEffect.wav')
+  sndSink = SoundEffect(soundDirectory + '\\sinkEffect.wav')
+  sndVictory = SoundEffect(soundDirectory + '\\victoryEffect.wav')
+  
   # Create the players, stored in a list for easier turn-taking
   players = [createPlayer(), createPlayer()]
   
