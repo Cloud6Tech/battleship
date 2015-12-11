@@ -117,7 +117,7 @@ def randomLevel3(hitCoord, usedCoord,switchFlag):
   
 #main AI control. Takes two parameters: current hit list and used coordinates
 #Make guess returns coordinate in string "A1"
-def makeGuess(hitCoord, usedCoord):
+def autoGuess(hitCoord, usedCoord):
   #set intial target postion
   target = "A2"
   #set starting y position for swithFlag check
