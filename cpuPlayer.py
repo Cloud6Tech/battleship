@@ -21,6 +21,7 @@ class CpuPlayer:
     self._board = Board('CPU Board')
     self._listOfShips = []
     self._guesses = []
+	self._hitList = []
 
     
   def getName(self):
@@ -45,9 +46,12 @@ class CpuPlayer:
   # Prompt the user to guess a coordinate until a valid, un-guessed coordinate is entered; return validated coordinate
   def makeGuess(self):
     #calls autoGuess function makeGuess
-    guess = autoGuess(hitCoord, self._guesses)
+    guess = autoGuess(self._board.hitList, self._guesses)
     self._guesses.append(guess)
 	return guess
+	
+  def updateHits (self, coordinate)
+	self._hitList.append(coordinate)
       
   def setupLocalBoard(self, listOfShips):
     self._listOfShips = listOfShips
@@ -99,9 +103,9 @@ class CpuPlayer:
 	#listOfShips.append(Ship(3,'cruiser'))
 	#listOfShips.append(Ship(4,'battleship'))
     #listOfShips.append(Ship(5,'carrier'))
-    self.setupLocalBoard(listOfShips)
+    #self.setupLocalBoard(listOfShips)
     direction = ['up', 'down', 'left', 'right']
-	xAxis = "ABCDEFG"
+	xAxis = "ABCDEFGHIJ"
 	yMax = 10
 	yMin = 1
 	self._listOfShips = listOfShips
