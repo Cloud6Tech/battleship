@@ -21,9 +21,7 @@ class CpuPlayer:
     self._board = Board('CPU Board')
     self._listOfShips = []
     self._guesses = []
-	self._hitList = []
-
-    
+ 
   def getName(self):
     return self._name
     
@@ -49,9 +47,6 @@ class CpuPlayer:
     guess = autoGuess(self._board.hitList, self._guesses)
     self._guesses.append(guess)
 	return guess
-	
-  def updateHits (self, coordinate)
-	self._hitList.append(coordinate)
       
   def setupLocalBoard(self, listOfShips):
     self._listOfShips = listOfShips
