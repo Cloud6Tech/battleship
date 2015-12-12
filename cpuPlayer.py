@@ -3,6 +3,9 @@
 # CpuPlayer Class
 # Team: Jason Lloyd Heather Mccabe, Brett, Matthew Mason
 
+
+#self.setupLocalBoard = listOfShips
+
 from media import *
 from ship import Ship
 from board import Board
@@ -12,7 +15,7 @@ class CPUPlayer:
   
   def __init__(self, name=''):
     self._name = name
-    self._board = Board('CPU Board')
+    self._board = Board('CPU_Board')
     self._listOfShips = []
     self._guesses = []
  
@@ -40,30 +43,31 @@ class CPUPlayer:
     #calls autoGuess function makeGuess
     guess = autoGuess(self._board.hitList, self._guesses)
     self._guesses.append(guess)
-	return guess
+    return guess
       
   def setupLocalBoard(self, listOfShips):
-    direction = ['up', 'down', 'left', 'right']
-	xAxis = "ABCDEFGHIJ"
-	yMax = 10
-	yMin = 1
-	self._listOfShips = listOfShips
-	#initialize coordinates
-	xCoord = ''
-	yCoord = 0
-	ranDirection = ''
-	# Automatically place ships
+    self._listOfShips = listOfShips
+
+    xAxis = "ABCDEFGHIJ"
+    yMax = 10
+    yMin = 1
+    
+    #initialize coordinates
+    xCoord = ''
+    yCoord = 0
+    runDirection = ['left', 'right', 'up', 'down']
+    # Automatically place ships
     for i in range(0,len(listOfShips)):
-	  shipSpace = false
-	  #check for space on board
-	  while shipSpace == false:
-		#select random coordinates to place ships
-	    xCoord = random.choice(xAxis)
-	    yCoord = random.randint(yMin,yMax)
-	    ranDirection = random.choice(direction)
-		shipSpace = validateSpaceForShip(listOfShips[i], xCoord + str(yCoord),ranDirection)
-	  #place ship on board
-      shipPlacedFlag = self._board.placeShip(listOfShips[i], xCoord + str(yCoord),ranDirection)
+      shipSpace = false
+      #check for space on board
+      while shipSpace == false:
+      #select random coordinates to place ships
+        xCoord = random.choice(xAxis)
+        yCoord = random.randint(yMin,yMax)
+        direction = random.randint(0,len(runDirection)-1)
+        shipSpace = self._board.validateSpaceForShip(listOfShips[i], xCoord + str(yCoord),runDirection[direction])
+        #place ship on board
+      self._board.placeShip(listOfShips[i], xCoord + str(yCoord),runDirection[direction])
     repaint(self._board.getBoard())
     return
 
