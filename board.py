@@ -11,6 +11,7 @@ class Board:
     # By default the board is 10 x 10. Update _size for a different board
     self._size = 10
     self._squareSize = 31
+    self._hitList = []
     # Initialize the board as a dictionary of 100 squares
     # 'A1', 'A2', 'A3', ... 'J8', 'J9', 'J10'
     # Each index returns a 0, until a ship is placed in it or a shot is fired
@@ -302,6 +303,18 @@ class Board:
   def markHit(self, coordinate, boardName):
       self.markSquare(coordinate,'hit', boardName)
       self.addPegToSquare(coordinate,red, boardName)
+      if boardName == "upper":
+        self._hitList.append(coordinate)
+  #clearHitLit()
+  #clears hit list of all items 
+  def clearHitList (self):
+    del self._hitList[:]
+  
+  #def getHitList
+  #returns hitList  
+  def getHitList(self):
+    hitList = self._hitList
+    return hitList
 
   # markMiss()
   # Args: string of coordinate
@@ -309,6 +322,8 @@ class Board:
   def markMiss(self, coordinate, boardName):
       self.markSquare(coordinate,'miss', boardName)
       self.addPegToSquare(coordinate,white, boardName)
+  
+  
   
   # drawShipOnSquare()
   # Args: coordinate in string form
