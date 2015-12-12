@@ -1,6 +1,7 @@
 #setLibPath("D:\\Heather\\Documents\\School\\CSIT\\2015 Fall B - CST 205\\battleship")
 #setLibPath('C:\\Users\\Jason Lloyd\\Dropbox\\School\\CSUMB\\CST205\\Final Project\\battleship\\')
-setLibPath('C:\\Users\\Bretterbear\\Documents\\GitHub\\battleship')
+#setLibPath('C:\\Users\\Bretterbear\\Documents\\GitHub\\battleship')
+setLibPath('C:\\Users\\masonm\\CST205\\battleship')
 
 from player import Player
 from ship import Ship
@@ -11,13 +12,14 @@ from random import randint
 from time import sleep
 
 # Prompt the user for player type and create and return a human Player object or computer AI object with boards set up
-def createPlayer():
+# Prompt the user for player type and create and return a human Player object or computer AI object with boards set up
+def createPlayer(type):
   # Create list of ships to place on boards
   listOfShips = [Ship(5,"aircraft carrier"),Ship(4,"battleship"),Ship(3,"submarine"),Ship(3,"cruiser"),Ship(2,"destroyer")]
 
   # Determine if the player is human (0) or a computer (1)
   #playerType = getOption("Player Type","Is this player a human or a computer?",["Human","Computer"])
-  playerType = 0
+  playerType = type
   
   if playerType == 0: # Human player
     # Get player's name
@@ -34,8 +36,12 @@ def createPlayer():
     player.setupLocalBoard(listOfShips)
     #player.setupTestPlayer(listOfShips)
     
-  #elif playerType == 1: # AI (computer) player
+  elif playerType == 1: # AI (computer) player
+    playerName = 'CPU'
+    player = CPUPlayer(playerName)
     
+    # Prompt player to set up their local board
+    player.setupLocalBoard(listOfShips)
   # Update the title of the game board Picture object with the player's name
   player.getBoard().getBoard().setTitle(playerName + "'s Fleet")
     
@@ -45,7 +51,8 @@ def battle():
 
   # Create the soundEffects to be used in the program
   #Change this to reflect your sound directory in order to make audio work
-  soundDirectory = 'C:\\Users\\Bretterbear\\Documents\\GitHub\\battleship\\SoundFiles'
+  #soundDirectory = 'C:\\Users\\Bretterbear\\Documents\\GitHub\\battleship\\SoundFiles'
+  soundDirectory = 'C:\\Users\\masonm\\CST205\\battleship\\SoundFiles'
   
   sndDeploy = SoundEffect(soundDirectory + '\\deployEffect.wav')
   sndDefeat = SoundEffect(soundDirectory + '\\defeatEffect.wav')
@@ -56,7 +63,7 @@ def battle():
   sndVictory = SoundEffect(soundDirectory + '\\victoryEffect.wav')
   
   # Create the players, stored in a list for easier turn-taking
-  players = [createPlayer(), createPlayer()]
+  players = [createPlayer(1), createPlayer(0)]
   
   # Exit if either player wasn't created
   if players[0] == None or players[1] == None:
@@ -119,6 +126,8 @@ def battle():
         sleep(1)
         # Remove ship from opponent's list of ships
         opponent.removeShip(ship)
+        #clears hit list in players board - primary use is for CPU makeGuess
+        player.getBoard().clearHitList()
         # Check if opponent has lost, print message and exit if so
         if opponent.getLife() == 0:
           printNow(player.getName() + " wins!")

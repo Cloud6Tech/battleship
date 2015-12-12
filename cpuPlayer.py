@@ -41,7 +41,8 @@ class CPUPlayer:
   # Prompt the user to guess a coordinate until a valid, un-guessed coordinate is entered; return validated coordinate
   def makeGuess(self):
     #calls autoGuess function makeGuess
-    guess = autoGuess(self._board.hitList, self._guesses)
+    hitList = self._board.getHitList()
+    guess = autoGuess(hitList, self._guesses)
     self._guesses.append(guess)
     return guess
       
@@ -58,23 +59,26 @@ class CPUPlayer:
     runDirection = ['left', 'right', 'up', 'down']
     # Automatically place ships
     for i in range(0,len(listOfShips)):
-      shipSpace = false
-      #check for space on board
-      while shipSpace == false:
-      #select random coordinates to place ships
-        xCoord = random.choice(xAxis)
-        yCoord = random.randint(yMin,yMax)
-        direction = random.randint(0,len(runDirection)-1)
-        shipSpace = self._board.validateSpaceForShip(listOfShips[i], xCoord + str(yCoord),runDirection[direction])
+      shipPlaced = false 
+      while shipPlaced == false:
+        shipSpace = false
+        #check for space on board
+        while shipSpace == false:
+        #select random coordinates to place ships
+          xCoord = random.choice(xAxis)
+          yCoord = random.randint(yMin,yMax)
+          direction = random.randint(0,len(runDirection)-1)
+          shipSpace = self._board.validateSpaceForShip(listOfShips[i], xCoord + str(yCoord),runDirection[direction])
         #place ship on board
-      self._board.placeShip(listOfShips[i], xCoord + str(yCoord),runDirection[direction])
+        shipPlaced = self._board.placeShip(listOfShips[i], xCoord + str(yCoord),runDirection[direction])
     repaint(self._board.getBoard())
     return
 
+############# Code for auto guess function #############
+xAxis ="ABCDEFGHIJ"
+yMax = 10
+yMin = 1
 def randomCoord(switchFlag):
-  xAxis ="ABCDEFGHIJ"
-  yMax = 10
-  yMin = 1
   # looking for flag to determine x axis is odd or y axis
   if switchFlag == false: #skips yAxis
     xCoord=random.choice(xAxis)
@@ -174,7 +178,7 @@ def randomLevel3(hitCoord, usedCoord,switchFlag):
        target = xCoordHit0 +str(yCoordHit1-1)
        return target
   else:
-    return randomLevel2(hitCoord, usedCoord,switchFlag)
+    randomCoord(switchFlag)
   
 #main AI control. Takes two parameters: current hit list and used coordinates
 #Make guess returns coordinate in string "A1"
@@ -194,7 +198,7 @@ def autoGuess(hitCoord, usedCoord):
   if int(lastY)%2 == 0:
     swithFlag = true
   #if hit list is empty then AI will select every other square until a hit is made
-  if len(hitCoord) == 0:
+  if len(hitCoord) < 1:
     #will not return a target if porvided coord is in used list
     while target in usedCoord:
       target = randomCoord(switchFlag)
