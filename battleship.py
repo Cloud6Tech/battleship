@@ -6,8 +6,9 @@ from player import Player
 from ship import Ship
 from board import Board
 from sounds import SoundEffect
-from utility import *
+#from utility import *
 from random import randint
+from time import sleep
 
 # Prompt the user for player type and create and return a human Player object or computer AI object with boards set up
 def createPlayer():
@@ -78,8 +79,10 @@ def battle():
     if guess == None:
       return
     
-    # Display the player's guess
+    # Display the player's guess and give audio feedback
     printNow(player.getName() + " fired at " + str(guess) + ".")
+    sndFire.playStart()
+    sleep(1)
     
     # Check if the player guessed correctly
 
@@ -92,15 +95,17 @@ def battle():
       # Update opponent's board
       opponent.getBoard().markMiss(guess, 'lower')
       
-      # Print message
+      # Print message and play audio
       printNow(player.getName() + " missed!")
-      
+      sndMiss.playStart()
+      sleep(1)
     
     else:
       # The guess was correct
       # Take 1 hit point away from the hit ship
       ship.takeHit()
-      
+      sndHit.playStart()
+      sleep(1)
       # Update the player's board
       player.getBoard().markHit(guess, 'upper')
       
@@ -110,11 +115,15 @@ def battle():
       # Check if ship was sunk, display appropriate message
       if ship.isSunk():  # The ship is sunk
         printNow(player.getName() + " sunk " + opponent.getName() + "'s " + ship.getDescription() + "!")
+        sndSink.playStart()
+        sleep(1)
         # Remove ship from opponent's list of ships
         opponent.removeShip(ship)
         # Check if opponent has lost, print message and exit if so
         if opponent.getLife() == 0:
           printNow(player.getName() + " wins!")
+          sndVictory.playStart()
+          sleep(1)
           return
       else:                # The ship is hit, but not sunk
         printNow(player.getName() + " hit " + opponent.getName() + "'s " + ship.getDescription() + "!")
