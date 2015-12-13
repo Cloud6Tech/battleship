@@ -10,7 +10,7 @@ class SoundEffect:
     self._sound = makeSound(filePath)
     
   def playStart(self):
-    play(self._sound)
+    blockingPlay(self._sound)
     return
   
   def playStop(self):

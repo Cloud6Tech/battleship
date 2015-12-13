@@ -1,7 +1,7 @@
 #setLibPath("D:\\Heather\\Documents\\School\\CSIT\\2015 Fall B - CST 205\\battleship")
-#setLibPath('C:\\Users\\Jason Lloyd\\Dropbox\\School\\CSUMB\\CST205\\Final Project\\battleship\\')
+setLibPath('C:\\Users\\Jason Lloyd\\Dropbox\\School\\CSUMB\\CST205\\Final Project\\battleship\\')
 #setLibPath('C:\\Users\\Bretterbear\\Documents\\GitHub\\battleship')
-setLibPath('C:\\Users\\masonm\\CST205\\battleship')
+#setLibPath('C:\\Users\\masonm\\CST205\\battleship')
 
 from player import Player
 from ship import Ship
@@ -10,6 +10,7 @@ from sounds import SoundEffect
 #from utility import *
 from random import randint
 from time import sleep
+from cpuPlayer import CPUPlayer
 
 # Prompt the user for player type and create and return a human Player object or computer AI object with boards set up
 # Prompt the user for player type and create and return a human Player object or computer AI object with boards set up
@@ -52,7 +53,8 @@ def battle():
   # Create the soundEffects to be used in the program
   #Change this to reflect your sound directory in order to make audio work
   #soundDirectory = 'C:\\Users\\Bretterbear\\Documents\\GitHub\\battleship\\SoundFiles'
-  soundDirectory = 'C:\\Users\\masonm\\CST205\\battleship\\SoundFiles'
+  #soundDirectory = 'C:\\Users\\masonm\\CST205\\battleship\\SoundFiles'
+  soundDirectory = 'C:\\Users\\Jason Lloyd\\Dropbox\\School\\CSUMB\\CST205\\Final Project\\battleship\\SoundFiles'
   
   sndDeploy = SoundEffect(soundDirectory + '\\deployEffect.wav')
   sndDefeat = SoundEffect(soundDirectory + '\\defeatEffect.wav')
@@ -77,7 +79,8 @@ def battle():
     player = players[n]
     opponent = players[abs(n-1)]
     board = players[n].getBoard()
-    repaint(board.getBoard())
+    if player.getName() != 'CPU':
+      repaint(board.getBoard())
   
     # Get player's guess; guessed coordinate will be validated
     guess = player.makeGuess()
@@ -98,6 +101,8 @@ def battle():
     if ship == 0:  # The guess was wrong
       # Update player's board
       player.getBoard().markMiss(guess, 'upper')
+      if player.getName() != 'CPU':
+        repaint(board.getBoard())
       
       # Update opponent's board
       opponent.getBoard().markMiss(guess, 'lower')
@@ -109,13 +114,15 @@ def battle():
     
     else:
       # The guess was correct
+      # Update the player's board
+      player.getBoard().markHit(guess, 'upper')
+      if player.getName() != 'CPU':
+        repaint(board.getBoard())
       # Take 1 hit point away from the hit ship
       ship.takeHit()
       sndHit.playStart()
       sleep(1)
-      # Update the player's board
-      player.getBoard().markHit(guess, 'upper')
-      
+            
       # Update the opponent's board
       opponent.getBoard().markHit(guess, 'lower')
       
