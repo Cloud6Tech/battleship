@@ -150,11 +150,11 @@ def randomLevel3(hitCoord, usedCoord,switchFlag):
   #if x0 is larger than x1. if true then the algorithm will grow in opposite direction along yAxis. 
   elif xIndexHit0 > xIndexHit1:
     # verifies to point are on the same axis and checks to ensure new target coord will stay on the board and has not been used. 
-    if yCoordHit0 == yCoordHit1 and xIndexHit1 != (len(xAxis)-1) and (xAxis[xIndexHit0+1] +str(yCoordHit0) not in usedCoord):
+    if yCoordHit0 == yCoordHit1 and xIndexHit0 != (len(xAxis)-1) and (xAxis[xIndexHit0+1] +str(yCoordHit0) not in usedCoord):
        target = xAxis[xIndexHit0+1] +str(yCoordHit0)
        return target
     # verifies to point are on the same axis and checks to ensure new target coord will stay on the board and has not been used.
-    elif yCoordHit0 == yCoordHit1 and xIndexHit0 != (0) and (xAxis[xIndexHit1-1] +str(yCoordHit0) not in usedCoord):
+    elif yCoordHit0 == yCoordHit1 and xIndexHit1 != (0) and (xAxis[xIndexHit1-1] +str(yCoordHit0) not in usedCoord):
        target = xAxis[xIndexHit1-1] +str(yCoordHit0)
        return target
   #checks to see if x0 is smaller than x1. if true the will move in smallest to larget along yAxis
@@ -164,13 +164,13 @@ def randomLevel3(hitCoord, usedCoord,switchFlag):
        target = xCoordHit0 +str(yCoordHit1+1)
        return target
     # verifies to point are on the same axis and checks to ensure new target coord will stay on the board and has not been used.
-    elif xCoordHit0 == xCoordHit1 and yCoordHit1 != yMin and (xCoordHit0 +str(yCoordHit0-1) not in usedCoord):
+    elif xCoordHit0 == xCoordHit1 and yCoordHit0 != yMin and (xCoordHit0 +str(yCoordHit0-1) not in usedCoord):
        target = xCoordHit0 +str(yCoordHit0-1)
        return target
   #if y0 is larger than y1. If true then the algorithm will grow in opposite direction along x axis.
   elif yCoordHit0 > yCoordHit1:
     # verifies to point are on the same axis and checks to ensure new target coord will stay on the board and has not been used.
-    if xCoordHit0 == xCoordHit1 and yCoordHit1 != yMax and (xCoordHit0 +str(yCoordHit0+1) not in usedCoord):
+    if xCoordHit0 == xCoordHit1 and yCoordHit0 != yMax and (xCoordHit0 +str(yCoordHit0+1) not in usedCoord):
        target = xCoordHit0 +str(yCoordHit0+1)
        return target
     # verifies to point are on the same axis and checks to ensure new target coord will stay on the board and has not been used.
@@ -214,4 +214,8 @@ def autoGuess(hitCoord, usedCoord):
     #will not return a target if porvided coord is in used list
     while target in usedCoord:
       target = randomLevel3(hitCoord, usedCoord,switchFlag)
+      #final catch for null string casued by adjacent virtical ships
+      if target == None:
+        target = randomLevel2(hitCoord, usedCoord,switchFlag)
+      
     return target
