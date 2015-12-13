@@ -1,7 +1,7 @@
 #setLibPath("D:\\Heather\\Documents\\School\\CSIT\\2015 Fall B - CST 205\\battleship")
-setLibPath('C:\\Users\\Jason Lloyd\\Dropbox\\School\\CSUMB\\CST205\\Final Project\\battleship\\')
+#setLibPath('C:\\Users\\Jason Lloyd\\Dropbox\\School\\CSUMB\\CST205\\Final Project\\battleship\\')
 #setLibPath('C:\\Users\\Bretterbear\\Documents\\GitHub\\battleship')
-#setLibPath('C:\\Users\\masonm\\CST205\\battleship')
+setLibPath('C:\\Users\\masonm\\CST205\\battleship')
 
 from player import Player
 from ship import Ship
@@ -53,8 +53,8 @@ def battle():
   # Create the soundEffects to be used in the program
   #Change this to reflect your sound directory in order to make audio work
   #soundDirectory = 'C:\\Users\\Bretterbear\\Documents\\GitHub\\battleship\\SoundFiles'
-  #soundDirectory = 'C:\\Users\\masonm\\CST205\\battleship\\SoundFiles'
-  soundDirectory = 'C:\\Users\\Jason Lloyd\\Dropbox\\School\\CSUMB\\CST205\\Final Project\\battleship\\SoundFiles'
+  soundDirectory = 'C:\\Users\\masonm\\CST205\\battleship\\SoundFiles'
+  #soundDirectory = 'C:\\Users\\Jason Lloyd\\Dropbox\\School\\CSUMB\\CST205\\Final Project\\battleship\\SoundFiles'
   
   sndDeploy = SoundEffect(soundDirectory + '\\deployEffect.wav')
   sndDefeat = SoundEffect(soundDirectory + '\\defeatEffect.wav')
