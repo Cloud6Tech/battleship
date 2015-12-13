@@ -71,7 +71,7 @@ class CPUPlayer:
           shipSpace = self._board.validateSpaceForShip(listOfShips[i], xCoord + str(yCoord),runDirection[direction])
         #place ship on board
         shipPlaced = self._board.placeShip(listOfShips[i], xCoord + str(yCoord),runDirection[direction])
-    repaint(self._board.getBoard())
+    #repaint(self._board.getBoard())
     return
 
 ############# Code for auto guess function #############
