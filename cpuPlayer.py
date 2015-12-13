@@ -178,7 +178,7 @@ def randomLevel3(hitCoord, usedCoord,switchFlag):
        target = xCoordHit0 +str(yCoordHit1-1)
        return target
   else:
-    randomCoord(switchFlag)
+    return randomLevel2(hitCoord, usedCoord,switchFlag)
   
 #main AI control. Takes two parameters: current hit list and used coordinates
 #Make guess returns coordinate in string "A1"
