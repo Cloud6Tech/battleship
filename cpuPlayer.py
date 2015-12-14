@@ -80,32 +80,28 @@ yAxis ="ABCDEFGHIJ"
 xMax = 10
 xMin = 1
 
-# Create list of every-other y-axis label
-yChoices = []
-for i in range(0,len(yAxis),2):
-  yChoices.append(yAxis[i])
-
 # Level One: Called if hit list is empty; guesses every other square until a hit is made
 # Argument: axis switchFlag 
-# Returns target coordinate in string form
+# Returns target coordinate as string
 def randomCoord(switchFlag):
   # switchFlag determines which axis will have guessed values skipped
-  if switchFlag == false: # Skip x-axis values
-    # Pick a random value on the y-axis
-    yCoord = random.choice(yAxis)
+  #every other square is skipped reducing random move option from 100 to 50
+  if switchFlag == false:# skip even x axis values on y axis ACEGI.
+    yCoord = random.choice('ACEGI')
     
     # Pick a random odd value on the x-axis
     xCoord = random.choice(range(xMin,xMax,2))
 
     # Create coordinate string
     target = yCoord + str(xCoord)
-  else: # Skip y-axis values
+  else: # skips odd x axis values on y axis BDFHJ
     # Pick a random value from the list of every-other y-value
-    yCoord = random.choice(yChoices)
+    yCoord = random.choice('BDFHJ')
     
     # Pick a random value on the x-axis
-    xCoord = random.randint(xMin,xMax)
-    
+    xCoord = random.choice(range(0,xMax,2))
+    while xCoord == 0:
+      xCoord = random.choice(range(0,xMax,2))
     # Create coordinate string
     target = yCoord + str(xCoord)
   
@@ -119,7 +115,7 @@ def randomLevel2(hitCoord, usedCoord,switchFlag):
    currentCoord  = hitCoord[0]
    yCoord = currentCoord[0]
    yIndex = yAxis.index(yCoord)
-   xCoord = int(currentCoord[1])
+   xCoord = int(currentCoord[1:])
    
    # Verify x+1 is on the board and new target coord has not already been used
    if xCoord != xMax and (yCoord +str(xCoord+1) not in usedCoord):
@@ -153,13 +149,13 @@ def randomLevel3(hitCoord, usedCoord, switchFlag):
   coordHit0  = hitCoord[0]
   yCoordHit0 = coordHit0[0]
   yIndexHit0 = yAxis.index(yCoordHit0)
-  xCoordHit0 = int(coordHit0[1])
+  xCoordHit0 = int(coordHit0[1:])
   
   # Get last hitCoord and separate y and x values
   coordHit1  = hitCoord[len(hitCoord)-1]
   yCoordHit1 = coordHit1[0]
   yIndexHit1 = yAxis.index(yCoordHit1)
-  xCoordHit1 = int(coordHit1[1])
+  xCoordHit1 = int(coordHit1[1:])
   
   # If y0 < y1, guesses will move down from y1 or up from y0 (along the y-axis)
   if yIndexHit0 < yIndexHit1:
@@ -240,7 +236,7 @@ def autoGuess(hitCoord, usedCoord):
     lastX = lastCoord[1]
   
   # If last X is positive, set switch flag to True, allowing yAxis to switch between even squares
-  if int(lastX)%2 == 0:
+  if int(lastX)%2 != 0:
     switchFlag = true
     
   # If hit list is empty then AI will select every other square until a hit is made
