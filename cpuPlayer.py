@@ -3,9 +3,6 @@
 # CpuPlayer Class
 # Team: Jason Lloyd Heather Mccabe, Brett, Matthew Mason
 
-
-#self.setupLocalBoard = listOfShips
-
 from media import *
 from ship import Ship
 from board import Board
@@ -38,7 +35,7 @@ class CPUPlayer:
         i += 1
     return false
         
-  # Prompt the user to guess a coordinate until a valid, un-guessed coordinate is entered; return validated coordinate
+  # Use autoGuess Seek and Destroy algorithm to select a target to guess
   def makeGuess(self):
     #calls autoGuess function makeGuess
     hitList = self._board.getHitList()
@@ -49,13 +46,13 @@ class CPUPlayer:
   def setupLocalBoard(self, listOfShips):
     self._listOfShips = listOfShips
 
-    xAxis = "ABCDEFGHIJ"
-    yMax = 10
-    yMin = 1
+    yAxis = "ABCDEFGHIJ"
+    xMax = 10
+    xMin = 1
     
     #initialize coordinates
-    xCoord = ''
-    yCoord = 0
+    yCoord = ''
+    xCoord = 0
     runDirection = ['left', 'right', 'up', 'down']
     # Automatically place ships
     for i in range(0,len(listOfShips)):
@@ -65,34 +62,34 @@ class CPUPlayer:
         #check for space on board
         while shipSpace == false:
         #select random coordinates to place ships
-          xCoord = random.choice(xAxis)
-          yCoord = random.randint(yMin,yMax)
+          yCoord = random.choice(yAxis)
+          xCoord = random.randint(xMin,xMax)
           direction = random.randint(0,len(runDirection)-1)
-          shipSpace = self._board.validateSpaceForShip(listOfShips[i], xCoord + str(yCoord),runDirection[direction])
+          shipSpace = self._board.validateSpaceForShip(listOfShips[i], yCoord + str(xCoord),runDirection[direction])
         #place ship on board
-        shipPlaced = self._board.placeShip(listOfShips[i], xCoord + str(yCoord),runDirection[direction])
+        shipPlaced = self._board.placeShip(listOfShips[i], yCoord + str(xCoord),runDirection[direction])
     #repaint(self._board.getBoard())
     return
 
 ############# Code for auto guess function #############
-xAxis ="ABCDEFGHIJ"
-xChoices = []
-for i in range(0,len(xAxis),2):
-  xChoices.append(xAxis[i])
-yMax = 10
-yMin = 1
+yAxis ="ABCDEFGHIJ"
+yChoices = []
+for i in range(0,len(yAxis),2):
+  yChoices.append(yAxis[i])
+xMax = 10
+xMin = 1
 def randomCoord(switchFlag):
-  # looking for flag to determine x axis is odd or y axis
-  if switchFlag == false: #skips yAxis
-    xCoord=random.choice(xAxis)
-    yCoord = random.choice(range(yMin,yMax,2))
-    if yCoord == 0:
-      yCoord = 1
-    target = xCoord + str(yCoord)
-  else: #skips xAxis
-    xCoord = random.choice(xChoices)
-    yCoord = random.randint(yMin,yMax)
-    target = xCoord + str(yCoord)
+  # looking for flag to determine y axis is odd or x axis
+  if switchFlag == false: #skips xAxis
+    yCoord=random.choice(yAxis)
+    xCoord = random.choice(range(xMin,xMax,2))
+    if xCoord == 0:
+      xCoord = 1
+    target = yCoord + str(xCoord)
+  else: #skips yAxis
+    yCoord = random.choice(yChoices)
+    xCoord = random.randint(xMin,xMax)
+    target = yCoord + str(xCoord)
   
   return target
 
@@ -102,26 +99,26 @@ def randomCoord(switchFlag):
 #Calls randomCoord as backup if no cases are matched
 #returns new target coordinate
 def randomLevel2(hitCoord, usedCoord,switchFlag):
-  #pulls current hitCoord to separate x and y values
+  #pulls current hitCoord to separate y and x values
    currentCoord  = hitCoord[0]
-   xCoord = currentCoord[0]
-   xIndex = xAxis.index(xCoord)
-   yCoord = int(currentCoord[1])
-   #verifies y+1 will not go off the board and the new coord has not already been used
-   if yCoord != yMax and (xCoord +str(yCoord+1) not in usedCoord):
-     target = xCoord +str(yCoord+1)
-     return target
+   yCoord = currentCoord[0]
+   yIndex = yAxis.index(yCoord)
+   xCoord = int(currentCoord[1])
    #verifies x+1 will not go off the board and the new coord has not already been used
-   elif xIndex != (len(xAxis)-1) and (xAxis[xIndex+1] +str(yCoord) not in usedCoord):
-     target = xAxis[xIndex+1] +str(yCoord)
+   if xCoord != xMax and (yCoord +str(xCoord+1) not in usedCoord):
+     target = yCoord +str(xCoord+1)
      return target
-   #verifies y-1 will not go off the board and the new coord has not already been used
-   elif yCoord != yMin and (xCoord +str(yCoord-1) not in usedCoord):
-     target = xCoord +str(yCoord-1)
+   #verifies y+1 will not go off the board and the new coord has not already been used
+   elif yIndex != (len(yAxis)-1) and (yAxis[yIndex+1] +str(xCoord) not in usedCoord):
+     target = yAxis[yIndex+1] +str(xCoord)
      return target
    #verifies x-1 will not go off the board and the new coord has not already been used
-   elif xIndex != 0 and (xAxis[xIndex-1] +str(yCoord) not in usedCoord):
-     target = xAxis[xIndex-1] +str(yCoord)
+   elif xCoord != xMin and (yCoord +str(xCoord-1) not in usedCoord):
+     target = yCoord +str(xCoord-1)
+     return target
+   #verifies y-1 will not go off the board and the new coord has not already been used
+   elif yIndex != 0 and (yAxis[yIndex-1] +str(xCoord) not in usedCoord):
+     target = yAxis[yIndex-1] +str(xCoord)
      return target
    #used if no cases match
    else:
@@ -134,58 +131,58 @@ def randomLevel3(hitCoord, usedCoord, switchFlag):
   
   # Pull out first hit coord from the hit list and separate x and y 
   coordHit0  = hitCoord[0]
-  xCoordHit0 = coordHit0[0]
-  xIndexHit0 = xAxis.index(xCoordHit0)
-  yCoordHit0 = int(coordHit0[1])
+  yCoordHit0 = coordHit0[0]
+  yIndexHit0 = yAxis.index(yCoordHit0)
+  xCoordHit0 = int(coordHit0[1])
   
   # Pull out last hit coord from the hit list and separate x and y
   coordHit1  = hitCoord[len(hitCoord)-1]
-  xCoordHit1 = coordHit1[0]
-  xIndexHit1 = xAxis.index(xCoordHit1)
-  yCoordHit1 = int(coordHit1[1])
+  yCoordHit1 = coordHit1[0]
+  yIndexHit1 = yAxis.index(yCoordHit1)
+  xCoordHit1 = int(coordHit1[1])
   
-  # If x1 is larger than x0, guesses will move from x0 to x1 along yAxis
-  if xIndexHit0 < xIndexHit1:
-    # Verify two points are on the same axis, xIndexHit1 hit coord is not on upper edge of board range, and new target coord has not been used
-    if yCoordHit0 == yCoordHit1 and xIndexHit1 != (len(xAxis)-1) and (xAxis[xIndexHit1+1] + str(yCoordHit0) not in usedCoord):
+  # If y1 is larger than y0, guesses will move from y0 to y1 along xAxis
+  if yIndexHit0 < yIndexHit1:
+    # Verify two points are on the same axis, yIndexHit1 hit coord is not on upper edge of board range, and new target coord has not been used
+    if xCoordHit0 == xCoordHit1 and yIndexHit1 != (len(yAxis)-1) and (yAxis[yIndexHit1+1] + str(xCoordHit0) not in usedCoord):
       # New target will be one space to the right of the higher hit coordinate
-      target = xAxis[xIndexHit1+1] +str(yCoordHit0)
+      target = yAxis[yIndexHit1+1] +str(xCoordHit0)
       return target
-    # Otherwise, verify two points are on the same axis, xIndexHit0 hit coord is not on lower edge of board range, and new target coord has not been used
-    elif yCoordHit0 == yCoordHit1 and xIndexHit0 != (0) and (xAxis[xIndexHit0-1] +str(yCoordHit0) not in usedCoord):
+    # Otherwise, verify two points are on the same axis, yIndexHit0 hit coord is not on lower edge of board range, and new target coord has not been used
+    elif xCoordHit0 == xCoordHit1 and yIndexHit0 != (0) and (yAxis[yIndexHit0-1] +str(xCoordHit0) not in usedCoord):
       # New target will be one space above the smaller hit coordinate
-      target = xAxis[xIndexHit0-1] + str(yCoordHit0)
+      target = yAxis[yIndexHit0-1] + str(xCoordHit0)
       return target
   
-  # If x0 is larger than x1, guesses will move in opposite direction along yAxis. 
-  elif xIndexHit0 > xIndexHit1:
+  # If y0 is larger than y1, guesses will move in opposite direction along xAxis. 
+  elif yIndexHit0 > yIndexHit1:
     # verifies to point are on the same axis and checks to ensure new target coord will stay on the board and has not been used. 
-    if yCoordHit0 == yCoordHit1 and xIndexHit0 != (len(xAxis)-1) and (xAxis[xIndexHit0+1] +str(yCoordHit0) not in usedCoord):
-       target = xAxis[xIndexHit0+1] +str(yCoordHit0)
+    if xCoordHit0 == xCoordHit1 and yIndexHit0 != (len(yAxis)-1) and (yAxis[yIndexHit0+1] +str(xCoordHit0) not in usedCoord):
+       target = yAxis[yIndexHit0+1] +str(xCoordHit0)
        return target
     # verifies to point are on the same axis and checks to ensure new target coord will stay on the board and has not been used.
-    elif yCoordHit0 == yCoordHit1 and xIndexHit1 != (0) and (xAxis[xIndexHit1-1] +str(yCoordHit0) not in usedCoord):
-       target = xAxis[xIndexHit1-1] +str(yCoordHit0)
+    elif xCoordHit0 == xCoordHit1 and yIndexHit1 != (0) and (yAxis[yIndexHit1-1] +str(xCoordHit0) not in usedCoord):
+       target = yAxis[yIndexHit1-1] +str(xCoordHit0)
        return target
-  #checks to see if x0 is smaller than x1. if true the will move in smallest to larget along yAxis
-  elif yCoordHit0 < yCoordHit1:
+  #checks to see if y0 is smaller than y1. if true the will move in smallest to larget along xAxis
+  elif xCoordHit0 < xCoordHit1:
     # verifies to point are on the same axis and checks to ensure new target coord will stay on the board and has not been used.
-    if xCoordHit0 == xCoordHit1 and yCoordHit1 != yMax and (xCoordHit0 +str(yCoordHit1+1) not in usedCoord):
-       target = xCoordHit0 +str(yCoordHit1+1)
-       return target
-    # verifies to point are on the same axis and checks to ensure new target coord will stay on the board and has not been used.
-    elif xCoordHit0 == xCoordHit1 and yCoordHit0 != yMin and (xCoordHit0 +str(yCoordHit0-1) not in usedCoord):
-       target = xCoordHit0 +str(yCoordHit0-1)
-       return target
-  #if y0 is larger than y1. If true then the algorithm will grow in opposite direction along x axis.
-  elif yCoordHit0 > yCoordHit1:
-    # verifies to point are on the same axis and checks to ensure new target coord will stay on the board and has not been used.
-    if xCoordHit0 == xCoordHit1 and yCoordHit0 != yMax and (xCoordHit0 +str(yCoordHit0+1) not in usedCoord):
-       target = xCoordHit0 +str(yCoordHit0+1)
+    if yCoordHit0 == yCoordHit1 and xCoordHit1 != xMax and (yCoordHit0 +str(xCoordHit1+1) not in usedCoord):
+       target = yCoordHit0 +str(xCoordHit1+1)
        return target
     # verifies to point are on the same axis and checks to ensure new target coord will stay on the board and has not been used.
-    elif xCoordHit0 == xCoordHit1 and yCoordHit1 != yMin and (xCoordHit0 +str(yCoordHit1-1) not in usedCoord):
-       target = xCoordHit0 +str(yCoordHit1-1)
+    elif yCoordHit0 == yCoordHit1 and xCoordHit0 != xMin and (yCoordHit0 +str(xCoordHit0-1) not in usedCoord):
+       target = yCoordHit0 +str(xCoordHit0-1)
+       return target
+  #if x0 is larger than x1. If true then the algorithm will grow in opposite direction along y axis.
+  elif xCoordHit0 > xCoordHit1:
+    # verifies to point are on the same axis and checks to ensure new target coord will stay on the board and has not been used.
+    if yCoordHit0 == yCoordHit1 and xCoordHit0 != xMax and (yCoordHit0 +str(xCoordHit0+1) not in usedCoord):
+       target = yCoordHit0 +str(xCoordHit0+1)
+       return target
+    # verifies to point are on the same axis and checks to ensure new target coord will stay on the board and has not been used.
+    elif yCoordHit0 == yCoordHit1 and xCoordHit1 != xMin and (yCoordHit0 +str(xCoordHit1-1) not in usedCoord):
+       target = yCoordHit0 +str(xCoordHit1-1)
        return target
   else:
     return randomLevel2(hitCoord, usedCoord,switchFlag)
@@ -197,19 +194,19 @@ def autoGuess(hitCoord, usedCoord):
   # Set intial target postion
   target = "A2"
   
-  # Set starting y position for switchFlag check
-  lastY = 1
+  # Set starting x position for switchFlag check
+  lastX = 1
   
   # Initialize switch flag to false
   switchFlag = false
   
-  # If used coord list is not empty, get the last y coordinate used
+  # If used coord list is not empty, get the last x coordinate used
   if len(usedCoord) > 0:
     lastCoord = usedCoord[len(usedCoord)-1]
-    lastY = lastCoord[1]
+    lastX = lastCoord[1]
   
-  # If last Y is positive, set switch flag to True, allowing xAxis to switch between even squares
-  if int(lastY)%2 == 0:
+  # If last X is positive, set switch flag to True, allowing yAxis to switch between even squares
+  if int(lastX)%2 == 0:
     switchFlag = true
     
   # If hit list is empty then AI will select every other square until a hit is made
