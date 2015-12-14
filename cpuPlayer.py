@@ -119,7 +119,7 @@ def randomLevel2(hitCoord, usedCoord,switchFlag):
    currentCoord  = hitCoord[0]
    yCoord = currentCoord[0]
    yIndex = yAxis.index(yCoord)
-   xCoord = int(currentCoord[1:])
+   xCoord = int(currentCoord[1])
    
    # Verify x+1 is on the board and new target coord has not already been used
    if xCoord != xMax and (yCoord +str(xCoord+1) not in usedCoord):
@@ -153,13 +153,13 @@ def randomLevel3(hitCoord, usedCoord, switchFlag):
   coordHit0  = hitCoord[0]
   yCoordHit0 = coordHit0[0]
   yIndexHit0 = yAxis.index(yCoordHit0)
-  xCoordHit0 = int(coordHit0[1:])
+  xCoordHit0 = int(coordHit0[1])
   
   # Get last hitCoord and separate y and x values
   coordHit1  = hitCoord[len(hitCoord)-1]
   yCoordHit1 = coordHit1[0]
   yIndexHit1 = yAxis.index(yCoordHit1)
-  xCoordHit1 = int(coordHit1[1:])
+  xCoordHit1 = int(coordHit1[1])
   
   # If y0 < y1, guesses will move down from y1 or up from y0 (along the y-axis)
   if yIndexHit0 < yIndexHit1:
@@ -237,9 +237,9 @@ def autoGuess(hitCoord, usedCoord):
   # If used coord list is not empty, get the last x coordinate used
   if len(usedCoord) > 0:
     lastCoord = usedCoord[len(usedCoord)-1]
-    lastX = lastCoord[1:]
+    lastX = lastCoord[1]
   
-  # If last X is even, set switch flag to True, making yAxis guesses skip between even indices
+  # If last X is positive, set switch flag to True, allowing yAxis to switch between even squares
   if int(lastX)%2 == 0:
     switchFlag = true
     
