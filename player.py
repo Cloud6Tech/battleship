@@ -1,7 +1,8 @@
-# Battleship Game
+# Final Project: Battleship Game
 # CST 205
-# Player Class
-# Team: Jason Lloyd Heather Mccabe, Brett, Matthew Mason
+# Group Seven: Brett Hansen, Jason Lloyd, Matthew Mason, Heather McCabe
+# Last modified: Dec 14, 2015
+# CPUPlayer.py
 
 from media import *
 from ship import Ship
@@ -29,17 +30,15 @@ class Player:
   def getLife(self):
     return len(self._listOfShips)
   
+  # Remove a ship from listOfShips (called when a ship is sunk); returns true if ship is found and removed, false otherwise  
   def removeShip(self, ship):
-    i = 0
-    for myShip in self._listOfShips:
-      if myShip == ship:
-        del self._listOfShips[i]
-        return true
-      else:
-        i += 1
-    return false
+    if ship in self._listOfShips:
+      self._listOfShips.remove(ship)
+      return true
+    else:
+      return false
         
-  # Prompt the user to guess a coordinate until a valid, un-guessed coordinate is entered; return validated coordinate
+  # Prompt user to guess a coordinate until valid, un-guessed coordinate is entered; return validated coordinate  
   def makeGuess(self):
     # Prompt the user to guess a coordinate until a valid coordinate is entered
     prompt = self._name + ", pick a target."
@@ -47,7 +46,7 @@ class Player:
       # Prompt the user
       guess = requestString(prompt)
     
-      # Verify that the coordinate is valid, return validated coordinate
+      # Verify that the coordinate input is valid
       if guess == None:
         # Cancel was clicked, return None
         return None
@@ -58,36 +57,44 @@ class Player:
         # Coordinate was already guessed, reprompt
         prompt = "You have already fired at that target."
       else:  
-        # Coordinate is valid and not already guessed
+        # Coordinate is valid and not already guessed, return validated coordinate
         self._guesses.append(guess)
         return guess.upper()
         
       
+  # Prompt user to select locations to place ships on board
   def setupLocalBoard(self, listOfShips):
+    # Save list of ships
     self._listOfShips = listOfShips
         
+    # Show player's board
     show(self._board.getBoard())
-    
-    # Make a copy of the listOfShips
-    shipsToPlace = list(self._listOfShips)
-    while len(shipsToPlace) > 0:
-      ship = shipsToPlace[0]
+
+    # Loop through ships to place
+    i = 0
+    while i < len(self._listOfShips):
+      ship = self._listOfShips[i]
       
-      coordinate = 0
+      # Prompt user to enter starting coordinate for placement
+      coordinate = false
       while not coordinate:
         coordinate = requestString('On what square will the bow of your %s (length: %s) be? ' % (ship.getDescription(),ship.getSize()))
         
+        # Cancel was clicked; clear list of ships and return to exit
         if coordinate == None:
           self._listOfShips[:] = []
           return
           
+        # Validate coordinate input
         coordinate = self._board.validateCoordinate(coordinate)
         if not coordinate:
           showInformation('That coordinate does not exist on the board. Please try again.')
                
+      # Prompt user to select direction in which to fill ship from starting coordinate
       directionChoices = ['Up', 'Down', 'Left', 'Right']
       direction = getOption("", "In which direction is the stern of your %s?" % ship.getDescription(), directionChoices)
       
+      # Translate option dialog return value
       if direction == 0:
         direction = 'up'
       elif direction == 1:
@@ -97,30 +104,17 @@ class Player:
       elif direction == 3:
         direction = 'right'
       
+      # Check if there is space in provided location, then place the ship; else reprompt if ship cannot be placed
       if self._board.validateSpaceForShip(ship, coordinate, direction):
         if self._board.placeShip(ship, coordinate, direction):
           repaint(self._board.getBoard())
           showInformation('Your %s has been placed on the board.' % ship.getDescription())
-          del shipsToPlace[0]
+          i += 1 # Incremement listOfShips index
         else: 
           showInformation('There is an existing ship in the way. Please try a different location.')
+          continue
       else:
         showInformation('There is not enough room on the board in that direction. Please try a different location.')
+        continue
           
-    return
-    
-  # Set up a board with predefined ship locations for easier testing
-  def setupTestPlayer(self,listOfShips):
-    # Set up player with fewer ships to manually place
-    #listOfShips = []
-    #listOfShips.append(Ship(2,'destroyer'))
-    #listOfShips.append(Ship(3,'submarine'))
-    #listOfShips.append(Ship(5,'carrier'))
-    #self.setupLocalBoard(listOfShips)
-    
-    # Automatically place ships
-    self._listOfShips = listOfShips
-    for i in range(0,len(listOfShips)):
-      self._board.placeShip(listOfShips[i],'A' + str(i+1),'down')
-    repaint(self._board.getBoard())
     return
