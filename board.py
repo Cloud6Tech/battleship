@@ -158,7 +158,7 @@ class Board:
       # Try to convert string remainder to int and check against board range
       try:
         # If remaining characters are int, check that int is within board size
-        if int(dataToValidate[1:]) >  self._size:
+        if int(dataToValidate[1:]) > self._size or int(dataToValidate[1:]) <= 0:
           dataToValidate = false
       # If int() above fails, remaining string characters are not numeric
       except:
