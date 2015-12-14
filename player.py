@@ -2,7 +2,7 @@
 # CST 205
 # Group Seven: Brett Hansen, Jason Lloyd, Matthew Mason, Heather McCabe
 # Last modified: Dec 14, 2015
-# CPUPlayer.py
+# Player.py
 
 from media import *
 from ship import Ship
