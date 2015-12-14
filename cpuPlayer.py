@@ -85,8 +85,9 @@ xMin = 1
 # Returns target coordinate as string
 def randomCoord(switchFlag):
   # switchFlag determines which axis will have guessed values skipped
-  #every other square is skipped reducing random move option from 100 to 50
-  if switchFlag == false:# skip even x axis values on y axis ACEGI.
+  # Every other square is skipped, reducing random move option from 100 to 50
+  if switchFlag == false: # Skip even x-axis values with y-axis 'ACEGI' values
+    # Pick a random value from the list of every-other y-value
     yCoord = random.choice('ACEGI')
     
     # Pick a random odd value on the x-axis
@@ -94,14 +95,13 @@ def randomCoord(switchFlag):
 
     # Create coordinate string
     target = yCoord + str(xCoord)
-  else: # skips odd x axis values on y axis BDFHJ
+  else: # Skip odd x-axis values with y-axis 'BDFHJ' values
     # Pick a random value from the list of every-other y-value
     yCoord = random.choice('BDFHJ')
     
-    # Pick a random value on the x-axis
-    xCoord = random.choice(range(0,xMax,2))
-    while xCoord == 0:
-      xCoord = random.choice(range(0,xMax,2))
+    # Pick a random even value on the x-axis
+    xCoord = random.choice(range(2,xMax,2))
+
     # Create coordinate string
     target = yCoord + str(xCoord)
   
