@@ -76,6 +76,9 @@ class CPUPlayer:
 
 ############# Code for auto guess function #############
 xAxis ="ABCDEFGHIJ"
+xChoices = []
+for i in range(0,len(xAxis),2):
+  xChoices.append(xAxis[i])
 yMax = 10
 yMin = 1
 def randomCoord(switchFlag):
@@ -87,10 +90,10 @@ def randomCoord(switchFlag):
       yCoord = 1
     target = xCoord + str(yCoord)
   else: #skips xAxis
-    xCoord=random.choice(xAxis[0,10,2])
+    xCoord = random.choice(xChoices)
     yCoord = random.randint(yMin,yMax)
     target = xCoord + str(yCoord)
-    
+  
   return target
 #searches around a hit area for another occupied location
 # takes in list current hit locations and used locations. 
@@ -180,24 +183,28 @@ def randomLevel3(hitCoord, usedCoord,switchFlag):
   else:
     return randomLevel2(hitCoord, usedCoord,switchFlag)
   
-#main AI control. Takes two parameters: current hit list and used coordinates
-#Make guess returns coordinate in string "A1"
+# Main AI control. Takes two parameters: list of current known hits, and list of already-used coordinates
+# makeGuess() returns coordinate in string form, i.e. "A1"
 def autoGuess(hitCoord, usedCoord):
-  #set intial target postion
+  # Set intial target postion
   target = "A2"
-  #set starting y position for swithFlag check
+  
+  # Set starting y position for switchFlag check
   lastY = 1
-  #initialize switch flag as false
-  switchFlag=false
-  #check if used coord list is empty. And set last y coordinate used. 
+  
+  # Initialize switch flag to false
+  switchFlag = false
+  
+  # If used coord list is not empty, get the last y coordinate used
   if len(usedCoord) > 0:
     lastCoord = usedCoord[len(usedCoord)-1]
     lastY = lastCoord[1]
-  #In not then the lastY coord will be checked
-  #if last Y is positive switch flag will be set to to true allowing xAxis to switch between even squares
+  
+  # If last Y is positive, set switch flag to True, allowing xAxis to switch between even squares
   if int(lastY)%2 == 0:
-    swithFlag = true
-  #if hit list is empty then AI will select every other square until a hit is made
+    switchFlag = true
+    
+  # If hit list is empty then AI will select every other square until a hit is made
   if len(hitCoord) < 1:
     #will not return a target if porvided coord is in used list
     while target in usedCoord:
