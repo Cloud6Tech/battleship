@@ -95,6 +95,8 @@ def randomCoord(switchFlag):
     target = xCoord + str(yCoord)
   
   return target
+
+# If a single hit has been made, randomLevel2() will guess around that point until another hit is made
 #searches around a hit area for another occupied location
 # takes in list current hit locations and used locations. 
 #Calls randomCoord as backup if no cases are matched
@@ -125,32 +127,37 @@ def randomLevel2(hitCoord, usedCoord,switchFlag):
    else:
      return randomCoord(switchFlag)
 
-#level three of search and destory.
-#takes 3 parameters current hit list, used coordinate list, calls level two if not parameters match.
-#checks two hit point to verify if x or y is repeated then moves either + or - along the axis until the target ship is dead     
-def randomLevel3(hitCoord, usedCoord,switchFlag):
-  #pulls out first hit coord from the hit list and separates x and y 
+# Level three of search and destroy, called if at least two hits have been made; guesses along a common axis between the first and last coordinate in the list
+# Arguments: list of current known hits, list of already-used coordinates, axis switchFlag
+# Checks two hit points to verify if x or y is repeated then moves either + or - along the axis until the target ship is dead     
+def randomLevel3(hitCoord, usedCoord, switchFlag):
+  
+  # Pull out first hit coord from the hit list and separate x and y 
   coordHit0  = hitCoord[0]
   xCoordHit0 = coordHit0[0]
   xIndexHit0 = xAxis.index(xCoordHit0)
   yCoordHit0 = int(coordHit0[1])
-  #pulls out last hit coord from the hit list and separates x and y
+  
+  # Pull out last hit coord from the hit list and separate x and y
   coordHit1  = hitCoord[len(hitCoord)-1]
   xCoordHit1 = coordHit1[0]
   xIndexHit1 = xAxis.index(xCoordHit1)
   yCoordHit1 = int(coordHit1[1])
   
-  #checks to see if x0 is larger that x1 so the will move in smallest to larget along yAxis
+  # If x1 is larger than x0, guesses will move from x0 to x1 along yAxis
   if xIndexHit0 < xIndexHit1:
-    # verifies to point are on the same axis and checks to ensure new target coord will stay on the board and has not been used. 
-    if yCoordHit0 == yCoordHit1 and xIndexHit1 != (len(xAxis)-1) and (xAxis[xIndexHit1+1] +str(yCoordHit0) not in usedCoord):
-       target = xAxis[xIndexHit1+1] +str(yCoordHit0)
-       return target
-    # verifies to point are on the same axis and checks to ensure new target coord will stay on the board and has not been used. 
+    # Verify two points are on the same axis, xIndexHit1 hit coord is not on upper edge of board range, and new target coord has not been used
+    if yCoordHit0 == yCoordHit1 and xIndexHit1 != (len(xAxis)-1) and (xAxis[xIndexHit1+1] + str(yCoordHit0) not in usedCoord):
+      # New target will be one space to the right of the higher hit coordinate
+      target = xAxis[xIndexHit1+1] +str(yCoordHit0)
+      return target
+    # Otherwise, verify two points are on the same axis, xIndexHit0 hit coord is not on lower edge of board range, and new target coord has not been used
     elif yCoordHit0 == yCoordHit1 and xIndexHit0 != (0) and (xAxis[xIndexHit0-1] +str(yCoordHit0) not in usedCoord):
-       target = xAxis[xIndexHit0-1] +str(yCoordHit0)
-       return target
-  #if x0 is larger than x1. if true then the algorithm will grow in opposite direction along yAxis. 
+      # New target will be one space above the smaller hit coordinate
+      target = xAxis[xIndexHit0-1] + str(yCoordHit0)
+      return target
+  
+  # If x0 is larger than x1, guesses will move in opposite direction along yAxis. 
   elif xIndexHit0 > xIndexHit1:
     # verifies to point are on the same axis and checks to ensure new target coord will stay on the board and has not been used. 
     if yCoordHit0 == yCoordHit1 and xIndexHit0 != (len(xAxis)-1) and (xAxis[xIndexHit0+1] +str(yCoordHit0) not in usedCoord):
@@ -183,8 +190,9 @@ def randomLevel3(hitCoord, usedCoord,switchFlag):
   else:
     return randomLevel2(hitCoord, usedCoord,switchFlag)
   
-# Main AI control. Takes two parameters: list of current known hits, and list of already-used coordinates
-# makeGuess() returns coordinate in string form, i.e. "A1"
+# Main AI control. 
+# Arguments: list of current known hits, list of already-used coordinates
+# Returns coordinate in string form, i.e. "A1"
 def autoGuess(hitCoord, usedCoord):
   # Set intial target postion
   target = "A2"
@@ -206,23 +214,24 @@ def autoGuess(hitCoord, usedCoord):
     
   # If hit list is empty then AI will select every other square until a hit is made
   if len(hitCoord) < 1:
-    #will not return a target if porvided coord is in used list
+    # Pick a random target that has not been guessed
     while target in usedCoord:
       target = randomCoord(switchFlag)
     return target
-  #if single hit is made the second level will look around the point until another hit is made
+  
+  # If a single hit has been made, randomLevel2() will guess around that point until another hit is made
   elif len(hitCoord) == 1:
-    #will not return a target if porvided coord is in used list
+    # Pick a target that near the hit target that has not been guessed
     while target in usedCoord:
-      target = randomLevel2(hitCoord, usedCoord,switchFlag)
+      target = randomLevel2(hitCoord, usedCoord, switchFlag)
     return target
-  #if more than two hits third level search will move along a common axis between the first and last coordinate in the list
+    
+  # If at least two hits have been made, randomLevel3() will guess along a common axis between the first and last coordinate in the list
   elif len(hitCoord) > 1:
-    #will not return a target if porvided coord is in used list
+    # Pick a target on the common axis that has not been guessed
     while target in usedCoord:
-      target = randomLevel3(hitCoord, usedCoord,switchFlag)
-      #final catch for null string casued by adjacent virtical ships
+      target = randomLevel3(hitCoord, usedCoord, switchFlag)
+      # Final catch for null string caused by adjacent vertical ships; go back to randomLevel2() logic
       if target == None:
-        target = randomLevel2(hitCoord, usedCoord,switchFlag)
-      
+        target = randomLevel2(hitCoord, usedCoord, switchFlag)
     return target
