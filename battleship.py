@@ -45,6 +45,10 @@ def createPlayer(playerType):
        
   # Prompt human Player to set up board or automatically set up CPUPlayer Board
   player.setupLocalBoard(listOfShips)
+  
+  # Exit without returning player object if player canceled during ship placement
+  if len(player._listOfShips) == 0:
+    return
       
   # Update the title of the game board Picture object with the player's name
   player.getBoard().getBoard().setTitle(playerName + "'s Fleet")
@@ -150,8 +154,9 @@ def battle():
         # Clear hit list in player's board - used for CPU makeGuess()
         player.getBoard().clearHitList()
         
-        # Check if opponent has lost; print message, play sound, and exit if so
+        # Check if opponent has lost
         if opponent.getLife() == 0:
+          # Print message, play sound, and exit
           printNow(player.getName() + " wins!")
           sndVictory.playStart()
           sleep(1)

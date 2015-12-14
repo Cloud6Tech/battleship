@@ -75,10 +75,15 @@ class Player:
       
       coordinate = 0
       while not coordinate:
-        coordinate = requestString('On what square will the bow of your %s be? ' % ship.getDescription())
+        coordinate = requestString('On what square will the bow of your %s (length: %s) be? ' % (ship.getDescription(),ship.getSize()))
+        
+        if coordinate == None:
+          self._listOfShips[:] = []
+          return
+          
         coordinate = self._board.validateCoordinate(coordinate)
         if not coordinate:
-          showInformation('That coordinate does not exist on the board, please try again ')
+          showInformation('That coordinate does not exist on the board. Please try again.')
                
       directionChoices = ['Up', 'Down', 'Left', 'Right']
       direction = getOption("", "In which direction is the stern of your %s?" % ship.getDescription(), directionChoices)
@@ -95,12 +100,12 @@ class Player:
       if self._board.validateSpaceForShip(ship, coordinate, direction):
         if self._board.placeShip(ship, coordinate, direction):
           repaint(self._board.getBoard())
-          showInformation('Your %s has been placed on the board' % ship.getDescription())
+          showInformation('Your %s has been placed on the board.' % ship.getDescription())
           del shipsToPlace[0]
         else: 
-          showInformation('There is an existing ship in the way, please try a different location ')
+          showInformation('There is an existing ship in the way. Please try a different location.')
       else:
-        showInformation('There is not enough room on the board in that direction, please try a different location ')
+        showInformation('There is not enough room on the board in that direction. Please try a different location.')
           
     return
     
