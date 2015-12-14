@@ -226,7 +226,7 @@ def randomLevel3(hitCoord, usedCoord, switchFlag):
 # Returns coordinate in string form, i.e. "A1"
 def autoGuess(hitCoord, usedCoord):
   # Intialize target variable
-  target = None
+  target = ''
   
   # Set starting x position for switchFlag check
   lastX = 1
@@ -246,22 +246,21 @@ def autoGuess(hitCoord, usedCoord):
   # If hit list is empty then AI will select every other square until a hit is made
   if len(hitCoord) < 1:
     # Pick a random target that has not been guessed
-    print target
-    while target == None or target in usedCoord:
+    while target == '' or target in usedCoord:
       target = randomCoord(switchFlag)
     return target
   
   # If a single hit has been made, randomLevel2() will guess around that point until another hit is made
   elif len(hitCoord) == 1:
     # Pick a target that near the hit target that has not been guessed
-    while target in usedCoord:
+    while target == '' or target in usedCoord:
       target = randomLevel2(hitCoord, usedCoord, switchFlag)
     return target
     
   # If at least two hits have been made, randomLevel3() will guess along a common axis between the first and last coordinate in the list
   elif len(hitCoord) > 1:
     # Pick a target on the common axis that has not been guessed
-    while target in usedCoord:
+    while target == '' or target in usedCoord:
       target = randomLevel3(hitCoord, usedCoord, switchFlag)
       # Final catch for null string caused by adjacent vertical ships; go to randomLevel2() logic
       if target == None:

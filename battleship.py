@@ -152,7 +152,7 @@ def battle():
         opponent.removeShip(ship)
         
         # Clear hit list in player's board - used for CPU makeGuess()
-        player.getBoard().clearHitList()
+        player.getBoard().clearHitList(ship)
         
         # Check if opponent has lost
         if opponent.getLife() == 0:

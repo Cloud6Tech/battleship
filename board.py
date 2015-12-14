@@ -269,6 +269,7 @@ class Board:
     # If we got here, all the squares needed are empty. Now we can finally add the ship to the board
     for i in listOfEmptyCoordinates:
       self._lowerLayout[i] = ship
+      ship.setCoord(i)
       self.drawShipOnSquare(i)
     
     return true
@@ -306,9 +307,11 @@ class Board:
       if boardName == "upper":
         self._hitList.append(coordinate)
   #clearHitLit()
-  #clears hit list of all items 
-  def clearHitList (self):
-    del self._hitList[:]
+  #removes ship coords from hitList
+  def clearHitList (self,ship):
+    for coord in ship.getCoord():
+      if coord in self._hitList:
+        self._hitList.remove(coord)
   
   #def getHitList
   #returns hitList  

@@ -13,12 +13,19 @@ class Ship:
     self._life = size
     # A name for the ship... for "Your battleship has been destroyed!"
     self._description = description
+    self._coords = []
   
   def getDescription(self):
     return self._description
     
   def getSize(self):
     return self._size  
+    
+  def setCoord(self,coordinate):
+    self._coords.append(coordinate)
+    
+  def getCoord(self):
+    return self._coords
   
   # isSunk() checks the _life member. If _life is less than 0, the ship is sunk 
   # and the function returns true
