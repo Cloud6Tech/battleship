@@ -5,6 +5,7 @@
 # sounds.py
 
 from media import *
+from time import *
 
 class SoundEffect:
 
@@ -12,9 +13,20 @@ class SoundEffect:
     self._sound = makeSound(filePath)
     
   def playStart(self):
-    blockingPlay(self._sound)
+    play(self._sound)
     return
+	
+  def playLooping(self, bTime, eTime):
+    if (eTime-bTime > getDuration(self._sound)):
+      play(self._sound)
+      return clock()
+    else:
+      return bTime
   
   def playStop(self):
     stopPlaying(self._sound)
     return
+	
+  def getDur(self):
+    dur = getDuration(self._sound)
+    return dur
