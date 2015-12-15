@@ -69,7 +69,7 @@ def battle():
   sndBGM = SoundEffect(soundDirectory + '\\bgMusic_02.wav')
   
   # Create the players, stored in a list for easier turn-taking
-  # player[0] is human, player[1] is AI/computer
+  # createPlayer(0) is human, createPlayer(1) is AI/computer
   players = [createPlayer(0), createPlayer(1)]
   
   # Exit if either player wasn't created
@@ -79,15 +79,15 @@ def battle():
   # Randomly pick a player to go first
   n = randint(0,1)
   
-  #Set initial times for background music looping
+  # Set initial times for background music looping
   startTime = clock()
   endTime = clock()
   
-  #Start the background music
+  # Start the background music
   sndBGM.playStart()
   
   while True:
-    # Possibly starts background music in current loop
+    # Loop background music if elapsed time is greater than music clip duration
     endTime = clock()
     startTime = sndBGM.playLooping(startTime, endTime)
     
@@ -102,13 +102,13 @@ def battle():
     # Get player's guess (guessed coordinate will be validated)
     guess = player.makeGuess()
     
-    # Player clicked cancel; end bgm sound and exit game
+    # Player clicked cancel; end background music (sndBGM) and exit game
     if guess == None:
       if (endTime - startTime < sndBGM.getDur()):
         sndBGM.playStop()
       return
     
-    # Display the player's guess and give audio feedback
+    # Display the player's guess and play audio
     printNow(player.getName() + " fired at " + str(guess) + ".")
     sndFire.playStart()
     sleep(sndFire.getDur())
@@ -150,7 +150,7 @@ def battle():
       # Take 1 hit point away from the hit ship
       ship.takeHit()
       
-      # Print message and play sound
+      # Print message and play audio
       printNow(player.getName() + " hit " + opponent.getName() + "'s " + ship.getDescription() + "!")
       sndHit.playStart()
       sleep(sndHit.getDur())
@@ -170,7 +170,7 @@ def battle():
         
         # Check if opponent has lost
         if opponent.getLife() == 0:
-          # Print message, play sound, and exit
+          # Print message, play audio, and exit
           printNow(player.getName() + " wins!")
           sndVictory.playStart()
           if (endTime - startTime < sndBGM.getDur()):
