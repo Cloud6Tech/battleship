@@ -16,7 +16,7 @@ from ship import Ship
 from board import Board
 from sounds import SoundEffect
 from random import randint
-from time import sleep
+from time import sleep, clock
 
 # Create and return a human Player object (type = 0) or computer AI object (type = 1) with boards set up
 def createPlayer(playerType):
@@ -66,6 +66,7 @@ def battle():
   sndMiss = SoundEffect(soundDirectory + '\\missedEffect.wav')
   sndSink = SoundEffect(soundDirectory + '\\sinkEffect.wav')
   sndVictory = SoundEffect(soundDirectory + '\\victoryEffect.wav')
+  sndBGM = SoundEffect(soundDirectory + '\\bgMusic_02.wav')
   
   # Create the players, stored in a list for easier turn-taking
   # player[0] is human, player[1] is AI/computer
@@ -78,7 +79,18 @@ def battle():
   # Randomly pick a player to go first
   n = randint(0,1)
   
+  #Set initial times for background music looping
+  startTime = clock()
+  endTime = clock()
+  
+  #Start the background music
+  sndBGM.playStart()
+  
   while True:
+    # Possibly starts background music in current loop
+    endTime = clock()
+    startTime = sndBGM.playLooping(startTime, endTime)
+    
     # Set current player and opponent
     player = players[n]
     opponent = players[abs(n-1)]
@@ -90,14 +102,16 @@ def battle():
     # Get player's guess (guessed coordinate will be validated)
     guess = player.makeGuess()
     
-    # Player clicked cancel; exit game
+    # Player clicked cancel; end bgm sound and exit game
     if guess == None:
+      if (endTime - startTime < sndBGM.getDur()):
+        sndBGM.playStop()
       return
     
     # Display the player's guess and give audio feedback
     printNow(player.getName() + " fired at " + str(guess) + ".")
     sndFire.playStart()
-    sleep(1)
+    sleep(sndFire.getDur())
     
     # Check if the player guessed correctly
     ship = opponent.getBoard().fireAt(guess)
@@ -118,7 +132,7 @@ def battle():
       # Print message and play audio
       printNow(player.getName() + " missed!")
       sndMiss.playStart()
-      sleep(1)
+      sleep(sndMiss.getDur())
     
     else: # The guess was correct
       # Update the player's board
@@ -139,14 +153,14 @@ def battle():
       # Print message and play sound
       printNow(player.getName() + " hit " + opponent.getName() + "'s " + ship.getDescription() + "!")
       sndHit.playStart()
-      sleep(1)
+      sleep(sndHit.getDur())
             
       # Check if ship was sunk
       if ship.isSunk():
         # Print message and play audio
         printNow(player.getName() + " sunk " + opponent.getName() + "'s " + ship.getDescription() + "!")
         sndSink.playStart()
-        sleep(1)
+        sleep(sndSink.getDur())
         
         # Remove ship from opponent's list of ships
         opponent.removeShip(ship)
@@ -159,7 +173,8 @@ def battle():
           # Print message, play sound, and exit
           printNow(player.getName() + " wins!")
           sndVictory.playStart()
-          sleep(1)
+          if (endTime - startTime < sndBGM.getDur()):
+            sndBGM.playStop()
           return
     
     # Increment n to swap players next turn
