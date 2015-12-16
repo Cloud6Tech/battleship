@@ -100,7 +100,7 @@ def randomCoord(switchFlag):
     yCoord = random.choice('BDFHJ')
     
     # Pick a random even value on the x-axis
-    xCoord = random.choice(range(2,xMax,2))
+    xCoord = random.choice(range(2,xMax+1,2))
 
     # Create coordinate string
     target = yCoord + str(xCoord)
